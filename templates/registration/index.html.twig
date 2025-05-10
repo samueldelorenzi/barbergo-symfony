@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Cadastro
+{% endblock %}
+
+{% block body %}
+
+	<div class="container">
+		<div class="row justify-content-center">
+			<div class="col-md-4">
+				<h1 class="text-center">Cadastro</h1>
+
+                {% for label, messages in app.flashes %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ label == 'error' ? 'danger' : label }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+
+				{{ form_start(registrationForm) }}
+
+				<div class="mb-3">
+					{{ form_label(registrationForm.name, 'Nome', {'label_attr': {'class': 'form-label'}}) }}
+					{{ form_errors(registrationForm.name) }}
+					{{ form_widget(registrationForm.name, {'attr': {'class': 'form-control'}}) }}
+				</div>
+
+				<div class="mb-3">
+					{{ form_label(registrationForm.email, 'Email', {'label_attr': {'class': 'form-label'}}) }}
+					{{ form_errors(registrationForm.email) }}
+					{{ form_widget(registrationForm.email, {'attr': {'class': 'form-control'}}) }}
+				</div>
+
+				<div class="mb-3">
+					{{ form_label(registrationForm.plainPassword, 'Senha', {'label_attr': {'class': 'form-label'}}) }}
+					{{ form_errors(registrationForm.plainPassword) }}
+					{{ form_widget(registrationForm.plainPassword, {'attr': {'class': 'form-control'}}) }}
+				</div>
+
+
+				<button type="submit" class="btn btn-warning fw-bold">Cadastrar</button>
+
+				{{ form_end(registrationForm) }}
+
+				<p class="mt-3 text-center">
+					Já tem uma conta?
+					<a class="text-warning" href="{{ path('app_login') }}">Entrar</a>
+				</p>
+			</div>
+		</div>
+	</div>
+
+{% endblock %}
