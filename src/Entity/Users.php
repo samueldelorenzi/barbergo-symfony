@@ -4,9 +4,13 @@ namespace App\Entity;
 
 use App\Repository\UsersRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: UsersRepository::class)]
-class Users
+#[UniqueEntity(fields: ['email'], message: 'E-mail já cadastrado.')]
+class Users implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -132,5 +136,21 @@ class Users
         $this->updated_at = $updated_at;
 
         return $this;
+    }
+    public function getUserIdentifier(): string
+    {
+        return $this->email;
+    }
+
+    public function getRoles(): array
+    {
+        return ['ROLE_' . strtoupper($this->role ?? 'USER')];
+    }
+
+    public function eraseCredentials(): void {}
+
+    public function getSalt(): ?string
+    {
+        return null;
     }
 }
