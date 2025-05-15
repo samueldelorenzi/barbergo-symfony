@@ -35,7 +35,8 @@ final class RegistrationController extends AbstractController
             $emi->persist($user);
             $emi->flush();
 
-            return $this->redirectToRoute('app_login');
+            $this->addFlash('success', 'Cadastro realizado com sucesso!');
+            return $this->redirectToRoute('app_registration');
         }
         return $this->render('registration/index.html.twig', [
             'form' => $form,
