@@ -1,3 +1,5 @@
+{% set center_content = true %}
+
 {% extends 'base.html.twig' %}
 
 {% block title %}BarberGO | Login
@@ -5,38 +7,39 @@
 
 {% block body %}
 
-	<div class="container">
-		<div class="row justify-content-center">
-			<div class="col-md-4">
-				<h1 class="text-center">Login</h1>
+	<div class="d-flex justify-content-center align-items-center w-100">
+		<div class="col-md-4">
+			<div class="card mb-3">
+				<div class="card-body">
+					<h1 class="text-center">Login</h1>
 
-				{% if error %}
-					<div class="alert alert-danger" role="alert">
-						{{ error.messageKey|trans(error.messageData, 'security') }}
-					</div>
-				{% endif %}
+					{% if error %}
+						<div class="alert alert-danger" role="alert">
+							{{ error.messageKey|trans(error.messageData, 'security') }}
+						</div>
+					{% endif %}
 
-				<form action="{{ path('app_login') }}" method="post">
-					<div class="mb-3">
-						<label for="username" class="form-label">Email</label>
-						<input type="text" id="username" name="_username" class="form-control" required autofocus>
-					</div>
+					<form action="{{ path('app_login') }}" method="post">
+						<div class="mb-3">
+							<label for="username" class="form-label">Email</label>
+							<input type="text" id="username" name="_username" class="form-control" required autofocus>
+						</div>
 
-					<div class="mb-3">
-						<label for="password" class="form-label">Senha</label>
-						<input type="password" id="password" name="_password" class="form-control" required>
-					</div>
+						<div class="mb-3">
+							<label for="password" class="form-label">Senha</label>
+							<input type="password" id="password" name="_password" class="form-control" required>
+						</div>
 
-					<button type="submit" class="btn btn-warning fw-bold">Entrar</button>
-				</form>
+						<button type="submit" class="btn btn-warning fw-bold">Entrar</button>
+					</form>
 
-				<p class="mt-3 text-center">
-					Não tem uma conta?
-					<a class="text-warning" href="{{ path('app_registration') }}">Cadastre-se</a>
-				</p>
+					<p class="mt-3 text-center">
+						Não tem uma conta?
+						<a class="text-warning" href="{{ path('app_registration') }}">Cadastre-se</a>
+					</p>
 
+				</div>
 			</div>
 		</div>
 	</div>
-
-{% endblock %}
+</div>{% endblock %}
