@@ -22,20 +22,20 @@
 				<img src="{{ asset('images/favicon.ico') }}" alt="Logo BarberGO" width="50" height="50" class="mx-2">
 				<span class="fs-2 text-white fw-bold">BarberGO</span>
 			</a>
-			<ul class="nav nav-pills mx-3">
+			<ul class="nav nav-pills nav-fill gap-2 p-1 small rounded-5 shadow-sm bg-warning mx-3">
 				<li class="nav-item">
-					<a href="{{ path('app_home') }}" class="nav-link fw-bold {% if app.request.attributes.get('_route') == 'app_home' %}active bg-warning text-dark{% else %}text-white{% endif %}">Home</a>
+					<a href="{{ path('app_home') }}" class="nav-link fw-bold rounded-5 {% if app.request.attributes.get('_route') == 'app_home' %}active bg-dark text-white{% else %}text-dark{% endif %}">Home</a>
 				</li>
 				<li class="nav-item">
-					<a href="{{ path('app_registration') }}" class="nav-link fw-bold {% if app.request.attributes.get('_route') == 'app_registration' %}active bg-warning text-dark{% else %}text-white{% endif %}">Cadastro</a>
+					<a href="{{ path('app_registration') }}" class="nav-link fw-bold rounded-5 {% if app.request.attributes.get('_route') == 'app_registration' %}active bg-dark text-white{% else %}text-dark{% endif %}">Cadastro</a>
 				</li>
 				<li class="nav-item">
-					<a href="{{ path('app_login') }}" class="nav-link fw-bold {% if app.request.attributes.get('_route') == 'app_login' %}active bg-warning text-dark{% else %}text-white{% endif %}">Login</a>
+					<a href="{{ path('app_login') }}" class="nav-link fw-bold rounded-5 {% if app.request.attributes.get('_route') == 'app_login' %}active bg-dark text-white{% else %}text-dark{% endif %}">Login</a>
 				</li>
 			</ul>
 		</header>
 
-		<main class="flex-shrink-0"> {% block body %}{% endblock %}
+		<main class="flex-grow-1 {% if center_content is defined %}d-flex align-items-center justify-content-center{% endif %}"> {% block body %}{% endblock %}
 			</main>
 
 			<footer class="footer mt-auto py-3 bg-dark">
