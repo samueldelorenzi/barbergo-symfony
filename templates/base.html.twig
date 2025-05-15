@@ -17,12 +17,10 @@
 		{% endblock %}
 	</head>
 	<body class="d-flex flex-column h-100">
-		<header class="d-flex flex-wrap justify-content-center py-3 border-bottom bg-dark">
-			<a href="#" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-				<svg xmlns="http://www.w3.org/2000/svg" class="bi me-2 m-2 text-white" width="16" height="16" fill="currentColor" class="bi bi-scissors" viewbox="0 0 16 16">
-					<path d="M3.5 3.5c-.614-.884-.074-1.962.858-2.5L8 7.226 11.642 1c.932.538 1.472 1.616.858 2.5L8.81 8.61l1.556 2.661a2.5 2.5 0 1 1-.794.637L8 9.73l-1.572 2.177a2.5 2.5 0 1 1-.794-.637L7.19 8.61zm2.5 10a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0m7 0a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0"/>
-				</svg>
-				<span class="fs-4 text-white">BarberGO</span>
+		<header class="d-flex flex-wrap justify-content-center py-3 border-bottom bg-dark align-items-center">
+			<a href="{{path('app_home')}}" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+				<img src="{{ asset('images/favicon.ico') }}" alt="Logo BarberGO" width="50" height="50" class="mx-2">
+				<span class="fs-2 text-white fw-bold">BarberGO</span>
 			</a>
 			<ul class="nav nav-pills mx-3">
 				<li class="nav-item">
@@ -32,7 +30,7 @@
 					<a href="{{ path('app_registration') }}" class="nav-link fw-bold {% if app.request.attributes.get('_route') == 'app_registration' %}active bg-warning text-dark{% else %}text-white{% endif %}">Cadastro</a>
 				</li>
 				<li class="nav-item">
-					<a href="#" class="nav-link fw-bold {% if app.request.attributes.get('_route') == 'app_login' %}active bg-warning text-dark{% else %}text-white{% endif %}">Login</a>
+					<a href="{{ path('app_login') }}" class="nav-link fw-bold {% if app.request.attributes.get('_route') == 'app_login' %}active bg-warning text-dark{% else %}text-white{% endif %}">Login</a>
 				</li>
 			</ul>
 		</header>
