@@ -30,7 +30,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $role = null;
 
     #[ORM\Column(type: 'boolean')]
-    private ?bool $active = null;
+    private bool $active = true;
 
     #[ORM\Column(type: 'datetime')]
     private ?\DateTimeInterface $created_at = null;
@@ -106,7 +106,6 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->active;
     }
-
     public function setActive(bool $active): static
     {
         $this->active = $active;
@@ -114,9 +113,9 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): string
     {
-        return $this->created_at;
+        return $this->created_at->format('Y-m-d H:i:s');
     }
 
     public function setCreatedAt(\DateTimeInterface $created_at): static
@@ -126,9 +125,9 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): string
     {
-        return $this->updated_at;
+        return $this->updated_at->format('Y-m-d H:i:s');
     }
 
     public function setUpdatedAt(\DateTimeInterface $updated_at): static

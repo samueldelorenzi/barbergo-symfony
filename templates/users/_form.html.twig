@@ -1,0 +1,75 @@
+{{ form_start(form) }}
+
+<div class="mb-3">
+	{{ form_label(form.name, 'Nome', {'label_attr': {'class': 'form-label'}}) }}
+	{% if form_errors(form.name) is empty %}
+		{{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
+	{% else %}
+		{{ form_widget(form.name, {'attr': {'class': 'form-control is-invalid'}}) }}
+	{% endif %}
+
+	<div class="text text-danger small">
+		{{ form_errors(form.name)|striptags }}
+	</div>
+</div>
+
+
+<div class="mb-3">
+	{{ form_label(form.email, 'Email', {'label_attr': {'class': 'form-label'}}) }}
+	{% if form_errors(form.email) is empty %}
+		{{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+	{% else %}
+		{{ form_widget(form.email, {'attr': {'class': 'form-control is-invalid'}}) }}
+	{% endif %}
+
+	<div class="text text-danger small">
+		{{ form_errors(form.email)|striptags }}
+	</div>
+</div>
+
+<div class="mb-3">
+	{{ form_label(form.plainPassword, 'Senha', {'label_attr': {'class': 'form-label'}}) }}
+	{% if form_errors(form.plainPassword) is empty %}
+		{{ form_widget(form.plainPassword, {'attr': {'class': 'form-control'}}) }}
+	{% else %}
+		{{ form_widget(form.plainPassword, {'attr': {'class': 'form-control is-invalid'}}) }}
+	{% endif %}
+
+	<div class="text text-danger small">
+		{{ form_errors(form.plainPassword)|striptags }}
+	</div>
+</div>
+
+<div class="mb-3">
+	{{ form_label(form.role, 'Função', {'label_attr': {'class': 'form-label'}}) }}
+	{% if form_errors(form.role) is empty %}
+		{{ form_widget(form.role, {'attr': {'class': 'form-select'}}) }}
+	{% else %}
+		{{ form_widget(form.role, {'attr': {'class': 'form-control is-invalid'}}) }}
+	{% endif %}
+
+	<div class="text text-danger small">
+		{{ form_errors(form.role)|striptags }}
+	</div>
+</div>
+
+<div class="form-check mb-3 text-start">
+	{{ form_widget(form.active, {'attr': {'class': 'form-check-input'}}) }}
+	{{ form_label(form.active, null, {'label_attr': {'class': 'form-check-label'}}) }}
+	{{ form_errors(form.active) }}
+
+</div>
+
+<div class="d-flex justify-content-between">
+	{{ include('components/button_submit.html.twig', {
+		'label': button_label|default('Salvar')
+	}) }}
+	{{ include('components/button_default.html.twig', {
+		'label': 'Voltar',
+		'path': 'app_users_index',
+		'icon': 'bi bi-arrow-left-circle me-1',
+		'class': 'primary'
+	}) }}
+</div>
+
+{{ form_end(form) }}
