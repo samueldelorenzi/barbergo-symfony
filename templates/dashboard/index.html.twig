@@ -1,0 +1,109 @@
+{% set center_content = true %}
+
+{% extends 'base_dashboard.html.twig' %}
+
+{% block title %}BarberGO | Painel Administrativo
+{% endblock %}
+
+{% block body %}
+	<div class="dashboard-container my-2 mx-1">
+		<div class="d-flex justify-content-center w-100">
+			<div class="col-md-10">
+				<div class="card">
+					<div class="card-header bg-dark text-white py-3">
+						<div class="d-flex justify-content-between align-items-center">
+							<h1 class="h3 mb-0">
+								<i class="fas fa-tachometer-alt me-2"></i>Painel Administrativo
+							</h1>
+						</div>
+						<p class="mb-0 mt-2 text-light opacity-75">
+							Centro de controle para gerenciar todos os aspectos do BarberGO. A partir daqui você pode administrar usuários, barbearias e configurações do sistema.
+						</p>
+					</div>
+
+					<div class="card-body p-4">
+						<div class="row">
+							<div class="col-md-4 mb-4">
+								<div class="card h-100 border-primary">
+									<div class="card-body text-center">
+										<i class="fas fa-users fa-3x text-primary mb-3"></i>
+										<h3 class="h5">Gerenciar Usuários</h3>
+										<p class="text-muted small">
+											Adicione, edite ou remova usuários do sistema. Controle níveis de acesso e permissões.
+										</p>
+										<a href="{{ path('app_users_index') }}" class="btn btn-primary mt-3 stretched-link">
+											Acessar
+											<i class="fas fa-arrow-right ms-1"></i>
+										</a>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-md-4 mb-4">
+								<div class="card h-100 border-success">
+									<div class="card-body text-center">
+										<i class="fas fa-cut fa-3x text-success mb-3"></i>
+										<h3 class="h5">Gerenciar Barbearias</h3>
+										<p class="text-muted small">
+											Administre todas as barbearias cadastradas. Ative, desative ou edite estabelecimentos.
+										</p>
+										<a href="#" class="btn btn-success mt-3 stretched-link">
+											Acessar
+											<i class="fas fa-arrow-right ms-1"></i>
+										</a>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-md-4 mb-4">
+								<div class="card h-100 border-info">
+									<div class="card-body text-center">
+										<i class="fas fa-calendar-alt fa-3x text-info mb-3"></i>
+										<h3 class="h5">Agendamentos</h3>
+										<p class="text-muted small">
+											Visualize e gerencie todos os agendamentos realizados no sistema.
+										</p>
+										<a href="#" class="btn btn-info mt-3 stretched-link">
+											Acessar
+											<i class="fas fa-arrow-right ms-1"></i>
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="row mt-2">
+							<div class="col-12">
+								<div class="card border-secondary">
+									<div class="card-body">
+										<h3 class="h5">
+											<i class="fas fa-chart-line me-2"></i>Estatísticas Rápidas</h3>
+										<div class="row text-center">
+											<div class="col-md-4">
+												<div class="stat-card p-3">
+													<h4 class="text-primary">{{ userCount }}</h4>
+													<p class="text-muted small mb-0">Usuários Ativos</p>
+												</div>
+											</div>
+											<div class="col-md-4">
+												<div class="stat-card p-3">
+													<h4 class="text-success">{{ barbershopCount }}</h4>
+													<p class="text-muted small mb-0">Barbearias</p>
+												</div>
+											</div>
+											<div class="col-md-4 p-3">
+												<div class="stat-card">
+													<h4 class="text-info">{{ appointmentsCount }}</h4>
+													<p class="text-muted small mb-0">Agendamentos</p>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	{% endblock %}

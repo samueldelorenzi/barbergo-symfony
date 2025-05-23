@@ -1,0 +1,11 @@
+{# recebe as variaiveis
+'path': 
+'userId':
+'class':
+'icon':
+'label':
+#}
+<a href="{{ path(path|default('app_home'), {'id': userId|default('')}) }}" class="btn btn-outline-{{class|default('primary')}} btn-sm fw-bold border-2">
+	<i class="{{ icon|default('') }}"></i>
+	<span class="d-none d-sm-inline">{{label|default('Editar')}}</span>
+</a>

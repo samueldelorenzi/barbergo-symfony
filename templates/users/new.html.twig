@@ -1,0 +1,30 @@
+{% set center_content = true %}
+
+{% extends 'base_dashboard.html.twig' %}
+
+{% block title %}BarberGO | Criar usuário
+{% endblock %}
+
+{% block body %}
+
+	<div class="d-flex justify-content-center align-items-center w-100">
+		<div class="col-md-4">
+			<div class="card mb-3">
+				<div class="card-body">
+					<h1 class="text-center">Criar novo usuário</h1>
+
+					{% for label, messages in app.flashes %}
+						{% for message in messages %}
+							<div class="alert alert-{{ label }}">
+								{{ message }}
+							</div>
+						{% endfor %}
+					{% endfor %}
+
+					{{ include('users/_form.html.twig', {'button_label': 'Criar usuário'}) }}
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>{% endblock %}
