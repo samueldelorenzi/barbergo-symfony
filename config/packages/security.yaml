@@ -24,8 +24,8 @@ security:
         success_handler: App\Security\CustomAuthenticationSuccessHandler
 
       logout:
-        path: logout
-        target: /
+        path: /logout
+        target: /login
 
   access_control:
     - { path: ^/login, roles: PUBLIC_ACCESS }
