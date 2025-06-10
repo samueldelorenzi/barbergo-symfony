@@ -40,4 +40,10 @@ class BarbershopRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+    public function findAllBarbershops(): array
+    {
+        return $this->createQueryBuilder('b')
+            ->getQuery()
+            ->getResult();
+    }
 }
