@@ -13,10 +13,10 @@ class BarberBarbershop
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    // Relacionamento com Users
-    #[ORM\ManyToOne(targetEntity: Users::class)]
+    // Relacionamento com User
+    #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'id_barber', referencedColumnName: 'id', nullable: false)]
-    private ?Users $id_barber = null;
+    private ?User $id_barber = null;
 
     // Relacionamento com Barbershop
     #[ORM\ManyToOne(targetEntity: Barbershop::class)]
@@ -28,12 +28,12 @@ class BarberBarbershop
         return $this->id;
     }
 
-    public function getIdBarber(): ?Users
+    public function getIdBarber(): ?User
     {
         return $this->id_barber;
     }
 
-    public function setIdBarber(Users $id_barber): static
+    public function setIdBarber(User $id_barber): static
     {
         $this->id_barber = $id_barber;
         return $this;

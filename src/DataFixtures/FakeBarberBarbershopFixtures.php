@@ -2,9 +2,9 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Barbershop;
-use App\Entity\Users;
 use App\Entity\BarberBarbershop;
+use App\Entity\Barbershop;
+use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -18,7 +18,7 @@ class FakeBarberBarbershopFixtures extends Fixture implements DependentFixtureIn
 
         for ($i = 0; $i < 5; $i++) {
             $barberBarbershop = new BarberBarbershop();
-            $userRepository = $manager->getRepository(Users::class);
+            $userRepository = $manager->getRepository(User::class);
             $barbershopRepository = $manager->getRepository(Barbershop::class);
 
             $barbers = $userRepository->findBy(['role' => 'barber']);

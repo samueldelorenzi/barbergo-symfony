@@ -2,9 +2,9 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Appointments;
+use App\Entity\Appointment;
 use App\Entity\Service;
-use App\Entity\Users;
+use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -16,7 +16,7 @@ class FakeAppointmentFixtures extends Fixture implements DependentFixtureInterfa
     {
         $faker = Factory::create('pt_BR');
 
-        $userRepository = $manager->getRepository(Users::class);
+        $userRepository = $manager->getRepository(User::class);
         $serviceRepository = $manager->getRepository(Service::class);
 
         $clients = $userRepository->findBy(['role' => 'user']);
@@ -24,7 +24,7 @@ class FakeAppointmentFixtures extends Fixture implements DependentFixtureInterfa
         $services = $serviceRepository->findAll();
 
         for ($i = 0; $i < 30; $i++) {
-            $appointment = new Appointments();
+            $appointment = new Appointment();
 
             $client = $faker->randomElement($clients);
             $barber = $faker->randomElement($barbers);

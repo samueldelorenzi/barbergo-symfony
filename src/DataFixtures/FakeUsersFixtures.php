@@ -2,11 +2,11 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Users;
+use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Faker\Factory;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class FakeUsersFixtures extends Fixture
 {
@@ -22,7 +22,7 @@ class FakeUsersFixtures extends Fixture
         $faker = Factory::create('pt_BR');
 
         for ($i = 0; $i < 10; $i++) {
-            $user = new Users();
+            $user = new User();
             $user->setName($faker->name());
             $user->setEmail($faker->unique()->safeEmail());
             $user->setRole('user');
@@ -35,7 +35,7 @@ class FakeUsersFixtures extends Fixture
         }
 
         for ($i = 0; $i < 10; $i++) {
-            $user = new Users();
+            $user = new User();
             $user->setName($faker->name());
             $user->setEmail($faker->unique()->safeEmail());
             $user->setRole('barber');

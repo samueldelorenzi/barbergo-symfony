@@ -14,10 +14,10 @@ class Schedule
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    // Relacionamento com Users (id_barber)
-    #[ORM\ManyToOne(targetEntity: Users::class)]
+    // Relacionamento com User (id_barber)
+    #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'id_barber', referencedColumnName: 'id', nullable: false)]
-    private ?Users $id_barber = null;
+    private ?User $id_barber = null;
 
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $week_day = null;
@@ -34,12 +34,12 @@ class Schedule
         return $this->id;
     }
 
-    public function getIdBarber(): ?Users
+    public function getIdBarber(): ?User
     {
         return $this->id_barber;
     }
 
-    public function setIdBarber(Users $id_barber): static
+    public function setIdBarber(User $id_barber): static
     {
         $this->id_barber = $id_barber;
         return $this;

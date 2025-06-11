@@ -4,7 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\BarberSchedule;
 use App\Entity\Schedule;
-use App\Entity\Users;
+use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -18,7 +18,7 @@ class FakeScheduleFixtures extends Fixture implements DependentFixtureInterface
 
         // Supondo que os barbeiros estão referenciados como 'user_0', 'user_1', ..., 'user_9'
         for ($i = 0; $i < 10; $i++) {
-            $userRepository = $manager->getRepository(Users::class);
+            $userRepository = $manager->getRepository(User::class);
             $barbers = $userRepository->findBy(['role' => 'barber']);
             $barber = $barbers[$i] ?? null;
 

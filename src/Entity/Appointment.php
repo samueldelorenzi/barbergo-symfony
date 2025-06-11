@@ -4,25 +4,23 @@ namespace App\Entity;
 
 use App\Repository\AppointmentsRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Event\PrePersistEventArgs;
-use Doctrine\ORM\Event\PreUpdateEventArgs;
 
 #[ORM\Entity(repositoryClass: AppointmentsRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-class Appointments
+class Appointment
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: Users::class)]
+    #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'id_client', referencedColumnName: 'id', nullable: false)]
-    private ?Users $id_client = null;
+    private ?User $id_client = null;
 
-    #[ORM\ManyToOne(targetEntity: Users::class)]
+    #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'id_barber', referencedColumnName: 'id', nullable: false)]
-    private ?Users $id_barber = null;
+    private ?User $id_barber = null;
 
     #[ORM\ManyToOne(targetEntity: Service::class)]
     #[ORM\JoinColumn(name: 'id_service', referencedColumnName: 'id', nullable: false)]
@@ -60,23 +58,23 @@ class Appointments
         return $this->id;
     }
 
-    public function getIdClient(): ?Users
+    public function getIdClient(): ?User
     {
         return $this->id_client;
     }
 
-    public function setIdClient(Users $id_client): static
+    public function setIdClient(User $id_client): static
     {
         $this->id_client = $id_client;
         return $this;
     }
 
-    public function getIdBarber(): ?Users
+    public function getIdBarber(): ?User
     {
         return $this->id_barber;
     }
 
-    public function setIdBarber(Users $id_barber): static
+    public function setIdBarber(User $id_barber): static
     {
         $this->id_barber = $id_barber;
         return $this;
@@ -120,14 +118,15 @@ class Appointments
         return $this->created_at;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
-    {
-        return $this->updated_at;
-    }
     public function setCreatedAt(\DateTimeInterface $created_at): static
     {
         $this->created_at = $created_at;
         return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updated_at;
     }
 
     public function setUpdatedAt(\DateTimeInterface $updated_at): static
