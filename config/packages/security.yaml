@@ -1,6 +1,6 @@
 security:
   password_hashers:
-    App\Entity\Users:
+    App\Entity\User:
       algorithm: auto
 
   providers:
