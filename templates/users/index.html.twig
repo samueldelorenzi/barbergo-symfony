@@ -1,86 +1,84 @@
-{% set center_content = true %}
-
-{% extends 'base_dashboard.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block title %}BarberGO | Usuários
 {% endblock %}
 
 {% block body %}
-	<div class="container py-5">
-		<div class="row justify-content-center">
-			<div class="col-12 col-md-10">
-				<div class="card shadow-sm">
-					<div class="card-header bg-dark text-white">
-						<h1 class="h3 mb-0 text-center">Usuários</h1>
-					</div>
-					<div class="card-body">
-						{% for label, messages in app.flashes %}
-							{% for message in messages %}
-								<div class="alert alert-{{ label }}">
-									{{ message }}
-								</div>
-							{% endfor %}
-						{% endfor %}
-						{{ include('components/button_default.html.twig', {
-							'path': 'app_users_new',
-							'label': 'Criar usuário',
-							'icon': 'bi bi-plus-circle me-1',
-							'class': 'success'
-						}) }}
-						<div class="table-responsive">
-							<table class="table">
-								<thead>
-									<tr class="text-center">
-										<th>Id</th>
-										<th>Nome</th>
-										<th>E-mail</th>
-										<th>Função</th>
-										<th>Ativo</th>
-										<th>Ações</th>
-									</tr>
-								</thead>
-								<tbody class="text-center">
-									{% for user in users %}
-										<tr>
-											<th scope="row" class="">{{user.id}}</th>
-											<td>{{user.name}}</td>
-											<td>{{user.email}}</td>
-											<td>{{user.role}}</td>
+    <div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-10">
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <h1 class="h3 mb-0 text-center">Usuários</h1>
+                </div>
+                <div class="card-body">
+                    {% for label, messages in app.flashes %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ label }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                    {{ include('components/button_default.html.twig', {
+                        'path': 'app_users_new',
+                        'label': 'Criar usuário',
+                        'icon': 'bi bi-plus-circle me-1',
+                        'class': 'success'
+                    }) }}
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr class="text-center">
+                                <th>Id</th>
+                                <th>Nome</th>
+                                <th>E-mail</th>
+                                <th>Função</th>
+                                <th>Ativo</th>
+                                <th>Ações</th>
+                            </tr>
+                            </thead>
+                            <tbody class="text-center">
+                            {% for user in users %}
+                                <tr>
+                                    <th scope="row" class="">{{ user.id }}</th>
+                                    <td>{{ user.name }}</td>
+                                    <td>{{ user.email }}</td>
+                                    <td>{{ user.role }}</td>
 
-											<td>
-												{% if user.isActive() %}
-													<span class="badge bg-success">Ativo</span>
-												{% else %}
-													<span class="badge bg-danger">Inativo</span>
-												{% endif %}
-											</td>
-											<td class="text-nowrap">
-												<div class="d-flex gap-2">
-													{{ include('components/button_default.html.twig', {
-														'label': 'Ver',
-														'path': 'app_users_show',
-														'icon': 'bi bi-eye me-1',
-														'class': 'primary',
-														'userId': user.id
-													}) }}
-													{{ include('components/button_default.html.twig', {
-														'label': 'Editar',
-														'path': 'app_users_edit',
-														'icon': 'bi bi-pencil-square me-1',
-														'class': 'warning',
-														'userId': user.id
-													}) }}
-													{{ include('users/_delete_form.html.twig') }}
-												</div>
-											</td>
-										</tr>
-									{% endfor %}
-								</tbody>
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>{% endblock %}
+                                    <td>
+                                        {% if user.isActive() %}
+                                            <span class="badge bg-success">Ativo</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Inativo</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-nowrap">
+                                        <div class="d-flex gap-2">
+                                            {{ include('components/button_default.html.twig', {
+                                                'label': 'Ver',
+                                                'path': 'app_users_show',
+                                                'icon': 'bi bi-eye me-1',
+                                                'class': 'primary',
+                                                'userId': user.id
+                                            }) }}
+                                            {{ include('components/button_default.html.twig', {
+                                                'label': 'Editar',
+                                                'path': 'app_users_edit',
+                                                'icon': 'bi bi-pencil-square me-1',
+                                                'class': 'warning',
+                                                'userId': user.id
+                                            }) }}
+                                            {{ include('users/_delete_form.html.twig') }}
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>{% endblock %}

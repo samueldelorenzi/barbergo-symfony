@@ -1,0 +1,41 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center" href="{{ path('app_home') }}">
+            <img src="{{ asset('images/favicon.ico') }}" alt="Logo BarberGO" width="40" height="40" class="me-2">
+            <span class="fs-4 fw-bold">BarberGO</span>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#client-nav" aria-controls="client-nav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="client-nav">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a href="{{ path('appointment_new') }}" class="nav-link px-3 {% if 'appointment_new' in app.request.attributes.get('_route') %} active border-bottom border-4 border-white{% endif %}">
+                        <i class="bi bi-calendar-check me-1"></i>
+                        <span class="d-lg-inline">Novo horário</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ path('appointment_my_appointments') }}" class="nav-link px-3 {% if 'appointment_my_appointments' in app.request.attributes.get('_route') %} active border-bottom border-4 border-white{% endif %}">
+                        <i class="bi bi-clock me-1"></i>
+                        <span class="d-lg-inline">Meus agendamentos</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ path('appointment_profile') }}" class="nav-link px-3 {% if 'appointment_profile' in app.request.attributes.get('_route') %} active border-bottom border-4 border-white{% endif %}">
+                        <i class="bi bi-person-circle me-1"></i>
+                        <span class="d-lg-inline">Perfil</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/logout" class="nav-link px-3 text-danger fw-semibold">
+                        <i class="bi bi-box-arrow-left me-1"></i>
+                        <span class="d-lg-inline">Sair</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

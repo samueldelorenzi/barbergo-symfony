@@ -30,12 +30,15 @@ class FakeAppointmentFixtures extends Fixture implements DependentFixtureInterfa
             $barber = $faker->randomElement($barbers);
             $service = $faker->randomElement($services);
 
-            $appointmentDatetime = $faker->dateTimeBetween('+1 day', '+30 days');
+            $datetime = $faker->dateTimeBetween('+1 day', '+30 days');
+            $dateOnly = \DateTime::createFromFormat('Y-m-d', $datetime->format('Y-m-d'));
+            $timeOnly = \DateTime::createFromFormat('H:i:s', $datetime->format('H:i:s'));
 
             $appointment->setIdClient($client);
             $appointment->setIdBarber($barber);
             $appointment->setIdService($service);
-            $appointment->setAppointmentDatetime($appointmentDatetime);
+            $appointment->setAppointmentDate($dateOnly);
+            $appointment->setAppointmentTime($timeOnly);
             $appointment->setStatus($faker->randomElement(['pendente', 'confirmado', 'cancelado']));
             $appointment->setCreatedAt(new \DateTime());
             $appointment->setUpdatedAt(new \DateTime());

@@ -26,8 +26,11 @@ class Appointment
     #[ORM\JoinColumn(name: 'id_service', referencedColumnName: 'id', nullable: false)]
     private ?Service $id_service = null;
 
-    #[ORM\Column(type: 'datetime')]
-    private ?\DateTimeInterface $appointment_datetime = null;
+    #[ORM\Column(type: 'date')]
+    private ?\DateTimeInterface $appointment_date = null;
+
+    #[ORM\Column(type: 'time')]
+    private ?\DateTimeInterface $appointment_time = null;
 
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $status = null;
@@ -51,7 +54,7 @@ class Appointment
         $this->updated_at = new \DateTimeImmutable();
     }
 
-    // Getters e setters...
+    // Getters e Setters
 
     public function getId(): ?int
     {
@@ -91,14 +94,25 @@ class Appointment
         return $this;
     }
 
-    public function getAppointmentDatetime(): ?\DateTimeInterface
+    public function getAppointmentDate(): ?\DateTimeInterface
     {
-        return $this->appointment_datetime;
+        return $this->appointment_date;
     }
 
-    public function setAppointmentDatetime(\DateTimeInterface $appointment_datetime): static
+    public function setAppointmentDate(\DateTimeInterface $appointment_date): static
     {
-        $this->appointment_datetime = $appointment_datetime;
+        $this->appointment_date = $appointment_date;
+        return $this;
+    }
+
+    public function getAppointmentTime(): ?\DateTimeInterface
+    {
+        return $this->appointment_time;
+    }
+
+    public function setAppointmentTime(\DateTimeInterface $appointment_time): static
+    {
+        $this->appointment_time = $appointment_time;
         return $this;
     }
 

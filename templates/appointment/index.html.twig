@@ -1,0 +1,229 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}BarberGO | Agendamento{% endblock %}
+
+{% block body %}
+    <div class="d-flex justify-content-center align-items-center w-100 mx-auto my-5">
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h2 class="text-center mb-4">Agende seu horário</h2>
+
+                    {% for label, messages in app.flashes %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ label }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+
+                    {{ form_start(form) }}
+
+                    <div class="mb-3">
+                        {{ form_label(form.barbershop, 'Barbearia', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.barbershop, {
+                            'attr': {
+                                'class': 'form-select' ~ (form_errors(form.barbershop) ? ' is-invalid' : ''),
+                                'disabled': false
+                            }
+                        }) }}
+                        <div class="text text-danger small">{{ form_errors(form.barbershop)|striptags }}</div>
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(form.id_barber, 'Barbeiro', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.id_barber, {
+                            'attr': {
+                                'class': 'form-select' ~ (form_errors(form.id_barber) ? ' is-invalid' : ''),
+                                'disabled': true
+                            }
+                        }) }}
+                        <div class="text text-danger small">{{ form_errors(form.id_barber)|striptags }}</div>
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(form.id_service, 'Serviço', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.id_service, {
+                            'attr': {
+                                'class': 'form-select' ~ (form_errors(form.id_service) ? ' is-invalid' : ''),
+                                'disabled': true
+                            }
+                        }) }}
+                        <div class="text text-danger small">{{ form_errors(form.id_service)|striptags }}</div>
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(form.appointment_date, 'Data', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.appointment_date, {
+                            'attr': {
+                                'class': 'form-select' ~ (form_errors(form.appointment_date) ? ' is-invalid' : ''),
+                                'disabled': true
+                            }
+                        }) }}
+                        <div class="text text-danger small">{{ form_errors(form.appointment_date)|striptags }}</div>
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(form.appointment_time, 'Hora', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.appointment_time, {
+                            'attr': {
+                                'class': 'form-select' ~ (form_errors(form.appointment_time) ? ' is-invalid' : ''),
+                                'disabled': true
+                            }
+                        }) }}
+                        <div class="text text-danger small">{{ form_errors(form.appointment_time)|striptags }}</div>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-warning fw-bold" id="appointment_submit_btn" disabled>
+                            <i class="bi bi-calendar-check me-1"></i>
+                            Confirmar Agendamento
+                        </button>
+                    </div>
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% block javascripts %}
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                function clearSelect(selector) {
+                    $(selector).html('<option value="">Selecione</option>');
+                    $(selector).prop('disabled', true);
+                }
+
+                function checkFormReady() {
+                    const barbershop = $('#appointment_type_form_barbershop').val();
+                    const barber = $('#appointment_type_form_id_barber').val();
+                    const service = $('#appointment_type_form_id_service').val();
+                    const date = $('#appointment_type_form_appointment_date').val();
+                    const time = $('#appointment_type_form_appointment_time').val();
+
+                    $('#appointment_type_form_id_barber').prop('disabled', !barbershop);
+                    $('#appointment_type_form_id_service').prop('disabled', !barbershop);
+                    $('#appointment_type_form_appointment_date').prop('disabled', !barber || !service);
+                    $('#appointment_type_form_appointment_time').prop('disabled', !barber || !service || !date);
+
+                    if(barbershop && barber && service && date && time) {
+                        $('#appointment_submit_btn').prop('disabled', false);
+                    } else {
+                        $('#appointment_submit_btn').prop('disabled', true);
+                    }
+                }
+
+                $('#appointment_type_form_barbershop').on('change', function() {
+                    const barbershopId = $(this).val();
+
+                    clearSelect('#appointment_type_form_id_barber');
+                    clearSelect('#appointment_type_form_id_service');
+                    clearSelect('#appointment_type_form_appointment_date');
+                    clearSelect('#appointment_type_form_appointment_time');
+
+                    if(!barbershopId) {
+                        checkFormReady();
+                        return;
+                    }
+
+                    $.ajax({
+                        url: `/get-barbers?barbershopId=${barbershopId}`,
+                        method: 'GET',
+                        success: function(barbers) {
+                            let barberOptions = '<option value="">Selecione um barbeiro</option>';
+                            barbers.forEach(function(barber) {
+                                barberOptions += `<option value="${barber.id}">${barber.name}</option>`;
+                            });
+                            $('#appointment_type_form_id_barber').html(barberOptions).prop('disabled', false);
+                            checkFormReady();
+                        },
+                        error: function() {
+                            alert('Erro ao carregar barbeiros.');
+                        }
+                    });
+
+                    $.ajax({
+                        url: `/get-service?barbershopId=${barbershopId}`,
+                        method: 'GET',
+                        success: function(services) {
+                            let serviceOptions = '<option value="">Selecione um serviço</option>';
+                            services.forEach(function(service) {
+                                serviceOptions += `<option value="${service.id}">${service.name}</option>`;
+                            });
+                            $('#appointment_type_form_id_service').html(serviceOptions).prop('disabled', false);
+                            checkFormReady();
+                        },
+                        error: function() {
+                            alert('Erro ao carregar serviços.');
+                        }
+                    });
+                });
+
+                $('#appointment_type_form_id_barber, #appointment_type_form_id_service').on('change', function() {
+                    clearSelect('#appointment_type_form_appointment_date');
+                    clearSelect('#appointment_type_form_appointment_time');
+
+                    const barberId = $('#appointment_type_form_id_barber').val();
+
+                    if(!barberId) {
+                        checkFormReady();
+                        return;
+                    }
+
+                    $.ajax({
+                        url: `/get-available-dates?barberId=${barberId}`,
+                        method: 'GET',
+                        success: function(dates) {
+                            let dateOptions = '<option value="">Selecione uma data</option>';
+                            dates.forEach(function(date) {
+                                const [year, month, day] = date.date.split('-');
+                                const formatted = `${day}/${month}/${year}`;
+                                dateOptions += `<option value="${date.date}">${date.dayName} - ${formatted}</option>`;
+                            });
+                            $('#appointment_type_form_appointment_date').html(dateOptions).prop('disabled', false);
+                            checkFormReady();
+                        },
+                        error: function() {
+                            alert('Erro ao carregar datas disponíveis.');
+                        }
+                    });
+                });
+
+                $('#appointment_type_form_appointment_date').on('change', function() {
+                    clearSelect('#appointment_type_form_appointment_time');
+
+                    const barberId = $('#appointment_type_form_id_barber').val();
+                    const serviceId = $('#appointment_type_form_id_service').val();
+                    const date = $(this).val();
+
+                    if(!barberId || !serviceId || !date) {
+                        checkFormReady();
+                        return;
+                    }
+
+                    $.ajax({
+                        url: `/get-available-times?barberId=${barberId}&serviceId=${serviceId}&date=${date}`,
+                        method: 'GET',
+                        success: function(times) {
+                            let timeOptions = '<option value="">Selecione um horário</option>';
+                            times.forEach(function(time) {
+                                timeOptions += `<option value="${time}">${time}</option>`;
+                            });
+                            $('#appointment_type_form_appointment_time').html(timeOptions).prop('disabled', false);
+                            checkFormReady();
+                        },
+                        error: function() {
+                            alert('Erro ao carregar horários disponíveis.');
+                        }
+                    });
+                });
+
+                $('#appointment_type_form_id_barber, #appointment_type_form_appointment_time').on('change', checkFormReady);
+
+                checkFormReady();
+            });
+        </script>
+    {% endblock %}
+{% endblock %}

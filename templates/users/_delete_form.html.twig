@@ -1,8 +1,8 @@
 <form method="post" action="{{ path('app_users_delete', {'id': user.id}) }}" class="d-inline">
-	<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
-	<button class="btn btn-outline-danger btn-sm fw-bold border-2" onclick="return confirm('Tem certeza que deseja desativar este usuário?');">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+    <button class="btn btn-outline-danger btn-sm fw-bold border-2" onclick="return confirm('Tem certeza que deseja desativar este usuário?');">
 
-		<i class="bi bi-trash me-1"></i>
-		<span class="d-none d-sm-inline">Desativar</span>
-	</button>
+        <i class="bi bi-trash me-1"></i>
+        <span class="d-none d-sm-inline">Desativar</span>
+    </button>
 </form>

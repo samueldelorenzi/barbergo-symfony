@@ -3,8 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Appointment;
+use App\Entity\BarberBarbershop;
 use App\Entity\User;
+use App\Entity\Service;
 use App\Form\AppointmentTypeForm;
+use App\Repository\BarberBarbershopRepository;
 use App\Repository\BarbershopRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -14,70 +17,61 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 
+#[Route('/appointment')]
 final class AppointmentController extends AbstractController
 {
-    #[Route('/appointment', name: 'app_appointment')]
-    public function new(Request $request, EntityManagerInterface $em, BarbershopRepository $barbershopRepository): Response
+    #[Route('', name: 'appointment_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $em): Response
     {
-        $appointment = new Appointment();
-        $barbershops = $barbershopRepository->findAllBarbershops();
-
-        // Passe a entidade $appointment para o form
-        $form = $this->createForm(AppointmentTypeForm::class, $appointment, [
-            'barbershops' => $barbershops
-        ]);
-
+        $form = $this->createForm(AppointmentTypeForm::class);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            // Pegue a data e hora do request (porque não tem no form)
-            $selectedDate = $request->request->get('date');
-            $selectedTime = $request->request->get('time');
+        if ($form->isSubmitted()) {
+            $data = $request->request->all();
+            $formData = $data['appointment_type_form'];
 
-            if (!$selectedDate || !$selectedTime) {
-                $this->addFlash('error', 'Data e horário são obrigatórios.');
-                // Re-exibe o form com erro
-                return $this->render('appointment/index.html.twig', [
-                    'barbershops' => $barbershops,
-                    'form' => $form
-                ]);
+            if (
+                !$formData['appointment_time'] ||
+                !$formData['appointment_date'] ||
+                !$formData['barbershop'] ||
+                !$formData['id_service'] ||
+                !$formData['id_barber']
+            ) {
+                $this->addFlash('danger', 'Campos vazios.');
+                return $this->redirectToRoute('appointment_new');
             }
 
-            $appointmentDateTime = DateTime::createFromFormat('Y-m-d H:i', $selectedDate . ' ' . $selectedTime);
-            if (!$appointmentDateTime) {
-                $this->addFlash('error', 'Data e hora inválidas.');
-                return $this->render('appointment/index.html.twig', [
-                    'barbershops' => $barbershops,
-                    'form' => $form->createView(),
-                ]);
-            }
-            $appointment->setAppointmentDatetime($appointmentDateTime);
+            $barber = $em->getRepository(User::class)->find($formData['id_barber']);
+            $service = $em->getRepository(Service::class)->find($formData['id_service']);
 
-            /** @var User $user */
-            $user = $this->getUser();
-            if (!$user) {
-                $this->addFlash('error', 'Você precisa estar logado para agendar.');
-                return $this->redirectToRoute('login_route_name'); // ajuste para sua rota de login
+            $client = $this->getUser();
+
+            if (!$barber || !$service || !$client instanceof User) {
+                $this->addFlash('danger', 'Barbeiro, serviço ou cliente inválido.');
+                return $this->redirectToRoute('appointment_new');
             }
-            $appointment->setIdClient(id_client: $user);
-            // Defina status padrão
-            $appointment->setStatus('scheduled');
+
+            $appointment = new Appointment();
+            $appointment->setIdClient($client);
+            $appointment->setIdBarber($barber);
+            $appointment->setIdService($service);
+            $appointment->setAppointmentDate(new DateTime($formData['appointment_date']));
+            $appointment->setAppointmentTime(DateTime::createFromFormat('H:i', $formData['appointment_time']));
+            $appointment->setStatus('Agendado');
 
             $em->persist($appointment);
             $em->flush();
 
             $this->addFlash('success', 'Agendamento realizado com sucesso!');
-            return $this->redirectToRoute('appointments_list');
+            return $this->redirectToRoute('appointment_new');
         }
 
         return $this->render('appointment/index.html.twig', [
-            'barbershops' => $barbershops,
-            'form' => $form->createView(),
+            'form' => $form,
         ]);
     }
 
-
-    #[Route('/appointment/profile', name: 'app_client_profile')]
+    #[Route('/profile', name: 'appointment_profile', methods: ['GET'])]
     public function profile(): Response
     {
         $user = $this->getUser();
@@ -87,22 +81,54 @@ final class AppointmentController extends AbstractController
         ]);
     }
 
-    #[Route('/appointment/my_appointments', name: 'app_my_appointments')]
+    #[Route('/my_appointments', name: 'appointment_my_appointments', methods: ['GET'])]
     public function my_appointments(EntityManagerInterface $em): Response
     {
         $user = $this->getUser();
 
-        $appointments = $em->getRepository(Appointment::class)->findBy([
-            'id_client' => $user
-        ], ['appointment_datetime' => 'DESC']);
+        $qb = $em->createQueryBuilder();
+        $qb->select('a')
+            ->from(Appointment::class, 'a')
+            ->where('a.id_client = :client')
+            ->setParameter('client', $user)
+            ->orderBy('a.appointment_date', 'ASC')
+            ->addOrderBy('a.appointment_time', 'ASC');
+
+        $appointments = $qb->getQuery()->getResult();
+
+        // Array para guardar as barbearias relacionadas a cada agendamento
+        $appointmentsBarbershops = [];
+
+        foreach ($appointments as $appointment) {
+            $barbershopsNames = [];
+
+            $barber = $appointment->getIdBarber();
+
+            if ($barber) {
+                // Buscar todas as relações BarberBarbershop desse barbeiro
+                $barberBarbershops = $em->getRepository(BarberBarbershop::class)
+                    ->findBy(['id_barber' => $barber]);
+
+                foreach ($barberBarbershops as $barberBarbershop) {
+                    $barbershop = $barberBarbershop->getIdBarbershop();
+                    if ($barbershop) {
+                        $barbershopsNames[] = $barbershop->getName();
+                    }
+                }
+            }
+
+            // Guardar array com nomes das barbearias para o agendamento
+            $appointmentsBarbershops[$appointment->getId()] = $barbershopsNames;
+        }
 
         return $this->render('appointment/client/appointments.html.twig', [
             'appointments' => $appointments,
-            'user' => $user
+            'user' => $user,
+            'appointmentsBarbershops' => $appointmentsBarbershops,
         ]);
     }
 
-    #[Route('/appointment/profile/update_password', name: 'app_client_update_password')]
+    #[Route('/profile/update_password', name: 'appointment_update_password', methods: ['GET', 'POST'])]
     public function change_password(Request $request, EntityManagerInterface $em): Response
     {
         /** @var User $user */
@@ -114,7 +140,7 @@ final class AppointmentController extends AbstractController
 
             if (!password_verify($currentPassword, $user->getPassword())) {
                 $this->addFlash('danger', 'Senha atual incorreta.');
-                return $this->redirectToRoute('app_client_update_password');
+                return $this->redirectToRoute('appointment_update_password');
             }
 
             if ($newPassword === $confirmPassword) {
@@ -124,7 +150,7 @@ final class AppointmentController extends AbstractController
                 $em->flush();
 
                 $this->addFlash('success', 'Senha atualizada com sucesso!');
-                return $this->redirectToRoute('app_client_update_password');
+                return $this->redirectToRoute('appointment_update_password');
             }
 
             $this->addFlash('danger', 'As senhas não coincidem.');
@@ -136,7 +162,7 @@ final class AppointmentController extends AbstractController
         ]);
     }
 
-    #[Route('/appointment/profile/update', name: 'app_client_update_profile')]
+    #[Route('/profile/update', name: 'appointment_update_profile', methods: ['GET', 'POST'])]
     public function update(Request $request, EntityManagerInterface $em): Response
     {
         /** @var User $user */
@@ -148,7 +174,7 @@ final class AppointmentController extends AbstractController
 
             if ($email !== $user->getEmail() && $em->getRepository(User::class)->findOneBy(['email' => $email])) {
                 $this->addFlash('danger', 'Este email já está em uso.');
-                return $this->redirectToRoute('app_client_update_profile');
+                return $this->redirectToRoute('appointment_update_profile');
             }
 
             if (!empty($name) && !empty($email)) {
@@ -159,7 +185,7 @@ final class AppointmentController extends AbstractController
                 $em->flush();
 
                 $this->addFlash('success', 'Perfil atualizado com sucesso!');
-                return $this->redirectToRoute('app_client_update_profile');
+                return $this->redirectToRoute('appointment_update_profile');
             }
 
             $this->addFlash('error', 'Todos os campos são obrigatórios.');
