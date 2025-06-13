@@ -26,10 +26,10 @@ class Barbershop
     #[ORM\Column(type: 'boolean')]
     private bool $active = true;
 
-    // Relacionamento com a entidade Users (created_by)
-    #[ORM\ManyToOne(targetEntity: Users::class)]
+    // Relacionamento com a entidade User (created_by)
+    #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'created_by', referencedColumnName: 'id', nullable: false)]
-    private ?Users $created_by = null;
+    private ?User $created_by = null;
 
     #[ORM\Column(type: 'datetime')]
     private ?\DateTimeInterface $created_at = null;
@@ -91,12 +91,12 @@ class Barbershop
         return $this;
     }
 
-    public function getCreatedBy(): ?Users
+    public function getCreatedBy(): ?User
     {
         return $this->created_by;
     }
 
-    public function setCreatedBy(Users $created_by): static
+    public function setCreatedBy(User $created_by): static
     {
         $this->created_by = $created_by;
         return $this;
@@ -105,5 +105,11 @@ class Barbershop
     public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->created_at;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $created_at): self
+    {
+        $this->created_at = $created_at;
+        return $this;
     }
 }

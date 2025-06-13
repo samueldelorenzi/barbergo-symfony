@@ -1,12 +1,12 @@
 security:
   password_hashers:
-    App\Entity\Users:
+    App\Entity\User:
       algorithm: auto
 
   providers:
     app_user_provider:
       entity:
-        class: App\Entity\Users
+        class: App\Entity\User
         property: email
 
   firewalls:
@@ -24,8 +24,8 @@ security:
         success_handler: App\Security\CustomAuthenticationSuccessHandler
 
       logout:
-        path: logout
-        target: /
+        path: /logout
+        target: /login
 
   access_control:
     - { path: ^/login, roles: PUBLIC_ACCESS }

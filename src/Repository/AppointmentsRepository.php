@@ -2,22 +2,22 @@
 
 namespace App\Repository;
 
-use App\Entity\Appointments;
+use App\Entity\Appointment;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Appointments>
+ * @extends ServiceEntityRepository<Appointment>
  */
 class AppointmentsRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Appointments::class);
+        parent::__construct($registry, Appointment::class);
     }
 
     //    /**
-    //     * @return Appointments[] Returns an array of Appointments objects
+    //     * @return Appointment[] Returns an array of Appointment objects
     //     */
     //    public function findByExampleField($value): array
     //    {
@@ -31,7 +31,7 @@ class AppointmentsRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?Appointments
+    //    public function findOneBySomeField($value): ?Appointment
     //    {
     //        return $this->createQueryBuilder('a')
     //            ->andWhere('a.exampleField = :val')

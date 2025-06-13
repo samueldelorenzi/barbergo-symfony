@@ -30,7 +30,7 @@ class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler
         }
 
         if (in_array('ROLE_CLIENT', $roles)) {
-            return new RedirectResponse($this->router->generate('app_appointment'));
+            return new RedirectResponse($this->router->generate('appointment_new'));
         }
 
         return new RedirectResponse($this->router->generate('app_home'));
