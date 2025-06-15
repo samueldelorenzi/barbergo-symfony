@@ -1,43 +1,136 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}BarberGO | Login
+{% block title %}BarberGO | Login{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        body {
+            background: url('{{ asset('images/image.png') }}') no-repeat center center fixed;
+            background-size: cover;
+        }
+        .glass {
+            background: rgba(0, 0, 0, 0.25);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+        .form-control {
+            height: 50px;
+            font-size: 1.1rem;
+        }
+        .input-group-text {
+            height: 50px;
+            font-size: 1.2rem;
+        }
+        .input-group-text i {
+            font-size: 1.3rem;
+        }
+        .shadow-dark {
+            box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .35) !important;
+        }
+        .shadow-darker {
+            box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .5) !important;
+        }
+        .shadow-darkest {
+            box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .75) !important;
+        }
+        .sidebar-brand {
+            border-bottom: 1px solid #104638;
+        }
+    </style>
 {% endblock %}
 
 {% block body %}
-
-    <div class="d-flex justify-content-center align-items-center w-100 mx-auto my-5">
-        <div class="col-md-4">
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h1 class="text-center">Login</h1>
-
-                    {% if error %}
-                        <div class="alert alert-danger" role="alert">
-                            {{ error.messageKey|trans(error.messageData, 'security') }}
+    <div class="flex-grow-1 d-flex align-items-center justify-content-center">
+        <div class="container d-flex align-items-center justify-content-center my-5 bg-opacity-25">
+            <div class="glass shadow-darker p-5 text-white rounded-3 border border-white border-opacity-25" style="width: 400px; max-width: 100%;">
+                <div class="mx-auto text-center">
+                    <img src="{{ asset('images/favicon.ico') }}" alt="Logo BarberGO" width="40" height="40" class="me-2">
+                </div>
+                <div class="text-center">
+                    <p class="fs-4 my-4 mx-4">Faça login para agendar seu horário</p>
+                </div>
+                {% if error %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ error.messageKey|trans(error.messageData, 'security') }}
+                    </div>
+                {% endif %}
+                <form action="{{ path('app_login') }}" method="post" class="needs-validation pb-3" autocomplete="on" novalidate>
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                    <div class="input-group mb-4 ">
+                        <label for="username" class="input-group-text" aria-label="Ícone de Email">
+                            <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+                        </label>
+                        <input type="email" id="username" name="_username" class="form-control" placeholder="Seu email" required autofocus aria-describedby="emailHelp">
+                        <div class="invalid-feedback">
+                            Por favor, insira um email válido.
                         </div>
-                    {% endif %}
-
-                    <form action="{{ path('app_login') }}" method="post">
-                        <div class="mb-3">
-                            <label for="username" class="form-label">Email</label>
-                            <input type="text" id="username" name="_username" class="form-control" required autofocus>
+                    </div>
+                    <div class="input-group mb-3">
+                        <label for="password" class="input-group-text">
+                            <i class="fa-solid fa-lock" aria-hidden="true"></i>
+                        </label>
+                        <input type="password" id="password" name="_password" class="form-control" placeholder="Sua senha" required aria-describedby="passwordHelp">
+                        <button type="button" class="input-group-text" onclick="togglePasswordVisibility()" aria-label="Mostrar/ocultar senha">
+                            <i id="toggleIcon" class="fa-solid fa-eye" aria-hidden="true"></i>
+                        </button>
+                        <div class="invalid-feedback">
+                            Por favor, insira sua senha.
                         </div>
-
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Senha</label>
-                            <input type="password" id="password" name="_password" class="form-control" required>
-                        </div>
-
-                        <button type="submit" class="btn btn-warning fw-bold">Entrar</button>
-                    </form>
-
-                    <p class="mt-3 text-center">
-                        Não tem uma conta?
-                        <a class="text-warning" href="{{ path('app_registration') }}">Cadastre-se</a>
-                    </p>
-
+                    </div>
+                    <div class="text-center mb-2">
+                        <a href="#" class="nav-link text-decoration-none disabled">Esqueceu a senha? (Em breve)</a>
+                    </div>
+                    <div class="form-switch mb-2">
+                        <input type="checkbox" name="_remember_me" id="remember_me" class="form-check-input">
+                        <label for="remember_me" class="form-check-label">Lembrar de mim</label>
+                    </div>
+                    <button type="submit" class="btn btn-warning fw-bold w-100 mt-3" aria-label="Entrar no sistema">Entrar</button>
+                </form>
+                <hr class="w-75 mx-auto my-2">
+                <div class="text-center">
+                    <p class="mb-2">Não tem uma conta?</p>
+                    <a class="text-warning fs-6" href="{{ path('app_registration') }}" aria-label="Ir para página de cadastro">Cadastre-se</a>
                 </div>
             </div>
         </div>
     </div>
-    </div>{% endblock %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('assets/js/valid.js') }}"></script>
+    <script>
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('toggleIcon');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.replace('fa-eye', 'fa-eye-slash');
+                toggleIcon.setAttribute('aria-label', 'Ocultar senha');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.replace('fa-eye-slash', 'fa-eye');
+                toggleIcon.setAttribute('aria-label', 'Mostrar senha');
+            }
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+            form.addEventListener('submit', function(event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            });
+            const toastElList = document.querySelectorAll('.toast');
+            toastElList.forEach(function(toastEl) {
+                const toast = new bootstrap.Toast(toastEl, {
+                    autohide: true,
+                    delay: 5000
+                });
+                toast.show();
+            });
+        });
+    </script>
+{% endblock %}
