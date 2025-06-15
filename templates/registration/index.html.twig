@@ -1,83 +1,145 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}BarberGO | Cadastro
+{% block title %}BarberGO | Cadastro{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        body {
+            background: url('{{ asset('images/image.png') }}') no-repeat center center fixed;
+            background-size: cover;
+        }
+        .glass {
+            background: rgba(0, 0, 0, 0.25);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+        .form-control {
+            height: 50px;
+            font-size: 1.1rem;
+        }
+        .input-group-text {
+            height: 50px;
+            font-size: 1.2rem;
+        }
+        .input-group-text i {
+            font-size: 1.3rem;
+        }
+        .shadow-dark {
+            box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .35) !important;
+        }
+        .shadow-darker {
+            box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .5) !important;
+        }
+        .shadow-darkest {
+            box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .75) !important;
+        }
+        .sidebar-brand {
+            border-bottom: 1px solid #104638;
+        }
+    </style>
 {% endblock %}
 
 {% block body %}
-
-    <div class="d-flex justify-content-center align-items-center w-100 mx-auto my-5">
-        <div class="col-md-4">
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h1 class="text-center">Cadastro</h1>
-
-                    {% for label, messages in app.flashes %}
-                        {% for message in messages %}
-                            <div class="alert alert-{{ label }}">
-                                {{ message }}
-                            </div>
-                        {% endfor %}
+    <div class="flex-grow-1 d-flex align-items-center justify-content-center">
+        <div class="container d-flex align-items-center justify-content-center my-5 bg-opacity-25">
+            <div class="glass shadow-darker p-5 text-white rounded-3 border border-white border-opacity-25" style="width: 400px; max-width: 100%;">
+                <div class="mx-auto text-center">
+                    <img src="{{ asset('images/favicon.ico') }}" alt="Logo BarberGO" width="40" height="40" class="me-2">
+                </div>
+                <div class="text-center">
+                    <p class="fs-4 my-4 mx-4">Crie sua conta no BarberGO</p>
+                </div>
+                {% for label, messages in app.flashes %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ label }}">
+                            {{ message }}
+                        </div>
                     {% endfor %}
-
-                    {{ form_start(form) }}
-
-                    <div class="mb-3">
-                        {{ form_label(form.name, 'Nome', {'label_attr': {'class': 'form-label'}}) }}
+                {% endfor %}
+                {{ form_start(form) }}
+                    <div class="input-group mb-4">
+                        <label class="input-group-text" aria-label="Ícone de Nome">
+                            <i class="fa-solid fa-user" aria-hidden="true"></i>
+                        </label>
                         {% if form_errors(form.name) is empty %}
-                            {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_widget(form.name, {
+                                'attr': {
+                                    'class': 'form-control',
+                                    'placeholder': 'Seu nome completo'
+                                }
+                            }) }}
                         {% else %}
-                            {{ form_widget(form.name, {'attr': {'class': 'form-control is-invalid'}}) }}
+                            {{ form_widget(form.name, {
+                                'attr': {
+                                    'class': 'form-control is-invalid',
+                                    'placeholder': 'Seu nome completo'
+                                }
+                            }) }}
                         {% endif %}
-
-                        <div class="text text-danger small">
+                        <div class="invalid-feedback">
                             {{ form_errors(form.name)|striptags }}
                         </div>
                     </div>
-
-
-                    <div class="mb-3">
-                        {{ form_label(form.email, 'Email', {'label_attr': {'class': 'form-label'}}) }}
+                    <div class="input-group mb-4">
+                        <label class="input-group-text" aria-label="Ícone de Email">
+                            <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+                        </label>
                         {% if form_errors(form.email) is empty %}
-                            {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_widget(form.email, {
+                                'attr': {
+                                    'class': 'form-control',
+                                    'placeholder': 'Seu email'
+                                }
+                            }) }}
                         {% else %}
-                            {{ form_widget(form.email, {'attr': {'class': 'form-control is-invalid'}}) }}
+                            {{ form_widget(form.email, {
+                                'attr': {
+                                    'class': 'form-control is-invalid',
+                                    'placeholder': 'Seu email'
+                                }
+                            }) }}
                         {% endif %}
-
-                        <div class="text text-danger small">
+                        <div class="invalid-feedback">
                             {{ form_errors(form.email)|striptags }}
                         </div>
                     </div>
-
-                    <div class="mb-3">
-                        {{ form_label(form.plainPassword, 'Senha', {'label_attr': {'class': 'form-label'}}) }}
+                    <div class="input-group mb-4">
+                        <label class="input-group-text" aria-label="Ícone de Senha">
+                            <i class="fa-solid fa-lock" aria-hidden="true"></i>
+                        </label>
                         {% if form_errors(form.plainPassword) is empty %}
-                            {{ form_widget(form.plainPassword, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_widget(form.plainPassword, {
+                                'attr': {
+                                    'class': 'form-control',
+                                    'placeholder': 'Sua senha'
+                                }
+                            }) }}
                         {% else %}
-                            {{ form_widget(form.plainPassword, {'attr': {'class': 'form-control is-invalid'}}) }}
+                            {{ form_widget(form.plainPassword, {
+                                'attr': {
+                                    'class': 'form-control is-invalid',
+                                    'placeholder': 'Sua senha'
+                                }
+                            }) }}
                         {% endif %}
-
-                        <div class="text text-danger small">
+                        <div class="invalid-feedback">
                             {{ form_errors(form.plainPassword)|striptags }}
                         </div>
                     </div>
-
-
-                    <div class="form-check mb-3 text-start">
+                    <div class="form-switch mb-4">
                         {{ form_widget(form.isBarber, {'attr': {'class': 'form-check-input'}}) }}
                         {{ form_label(form.isBarber, null, {'label_attr': {'class': 'form-check-label'}}) }}
                         {{ form_errors(form.isBarber) }}
                     </div>
-
-                    <button type="submit" class="btn btn-warning fw-bold">Cadastrar</button>
-
-                    {{ form_end(form) }}
-
-                    <p class="mt-3 text-center">
-                        Já tem uma conta?
-                        <a class="text-warning" href="{{ path('app_login') }}">Entrar</a>
-                    </p>
+                    <button type="submit" class="btn btn-warning fw-bold w-100">Cadastrar</button>
+                {{ form_end(form) }}
+                <hr class="w-75 mx-auto my-2">
+                <div class="text-center">
+                    <p class="mb-2">Já tem uma conta?</p>
+                    <a class="text-warning fs-6" href="{{ path('app_login') }}" aria-label="Ir para página de login">Fazer login</a>
                 </div>
             </div>
         </div>
     </div>
-    </div>{% endblock %}
+{% endblock %}
