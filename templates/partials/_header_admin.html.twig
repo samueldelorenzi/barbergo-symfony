@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-        <a class="navbar-brand d-flex align-items-center" href="{{ path('app_dashboard') }}">
+        <a class="navbar-brand d-flex align-items-center" href="{{ path('admin_dashboard') }}">
             <img src="{{ asset('images/favicon.ico') }}" alt="Logo BarberGO" width="40" height="40" class="me-2">
             <span class="fs-4 fw-bold">BarberGO: Admin</span>
         </a>
@@ -12,13 +12,13 @@
         <div class="collapse navbar-collapse" id="admin-nav">
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a href="{{ path('app_dashboard') }}" class="nav-link px-3 {% if 'dashboard' in app.request.attributes.get('_route') %} active border-bottom border-4 border-white{% endif %}">
+                    <a href="{{ path('admin_dashboard') }}" class="nav-link px-3 {% if 'dashboard' in app.request.attributes.get('_route') %} active border-bottom border-4 border-white{% endif %}">
                         <i class="bi bi-bar-chart-line-fill me-1"></i>
                         <span class="d-lg-inline">Dashboard</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ path('app_users_index') }}" class="nav-link px-3 {% if 'user' in app.request.attributes.get('_route') %} active border-bottom border-4 border-white{% endif %}">
+                    <a href="{{ path('admin_users_index') }}" class="nav-link px-3 {% if 'users' in app.request.attributes.get('_route') %} active border-bottom border-4 border-white{% endif %}">
                         <i class="bi bi-people-fill me-1"></i>
                         <span class="d-lg-inline">Usuários</span>
                     </a>

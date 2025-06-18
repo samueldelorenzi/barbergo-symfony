@@ -22,11 +22,9 @@ class Barbershop
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $address = null;
 
-    // Definindo o valor padrão como true
     #[ORM\Column(type: 'boolean')]
     private bool $active = true;
 
-    // Relacionamento com a entidade User (created_by)
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'created_by', referencedColumnName: 'id', nullable: false)]
     private ?User $created_by = null;

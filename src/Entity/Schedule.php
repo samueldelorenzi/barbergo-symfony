@@ -14,7 +14,6 @@ class Schedule
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    // Relacionamento com User (id_barber)
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'id_barber', referencedColumnName: 'id', nullable: false)]
     private ?User $id_barber = null;
@@ -22,7 +21,6 @@ class Schedule
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $week_day = null;
 
-    // Tipo TIME_MUTABLE para representar horas
     #[ORM\Column(type: Types::TIME_MUTABLE)]
     private ?\DateTimeInterface $start_time = null;
 
