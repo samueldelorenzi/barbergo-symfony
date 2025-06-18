@@ -1,52 +1,167 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}BarberGO | Home
+{% block title %}BarberGO | Home{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .carousel {
+            width: 100%;
+            border:none;
+
+        }
+
+        .carousel-item img {
+            height: 15rem;
+            object-fit: cover;
+            width: 100%;
+        }
+        canvas {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    background: #fff;
+    padding: 10px;
+}
+
+    </style>
 {% endblock %}
 
 {% block body %}
-    <section class="py-5 text-center container">
-        <div class="row py-lg-5">
-            <div class="col-lg-6 col-md-8 mx-auto">
-                <h1 class="fw-bold fs-1">Bem-vindo ao
-                    <span style="background: linear-gradient(120deg,rgb(0, 0, 0),#FFC107); background-clip:text; color: transparent">BarberGO</span>
-
-                </h1>
-                <p class="lead text-muted">O BarberGO é a solução completa para gerenciar sua barbearia. Agendamentos
-                    online, controle de faturamento, cadastro de clientes e um painel administrativo intuitivo — tudo em
-                    um só lugar.</p>
-                <p>
-                    <a href="{{ path('app_register') }}" class="btn btn-warning my-2 fw-bold">Cadastre-se</a>
-                    <a href="{{ path('app_login') }}" class="btn btn-dark my-2 fw-bold">Entrar</a>
-                </p>
+<section class="text-center container-fluid p-0">
+    <section id="barberCarousel" class="carousel slide mb-5" data-bs-ride="carousel" data-bs-interval="5000">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#barberCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#barberCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#barberCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        </div>
+        <div class="carousel-inner rounded shadow">
+            <div class="carousel-item active">
+                <img src="{{ asset('images/image1.jpg') }}" class="d-block img-fluid" alt="Barbearia 1">
+            </div>
+            <div class="carousel-item">
+                <img src="{{ asset('images/image2.jpg') }}" class="d-block img-fluid" alt="Barbearia 2">
+            </div>
+            <div class="carousel-item">
+                <img src="{{ asset('images/image.png') }}" class="d-block img-fluid" alt="Barbearia 3">
             </div>
         </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#barberCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Anterior</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#barberCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Próximo</span>
+        </button>
     </section>
 
-    <section class="bg-light py-5">
-        <div class="container">
-            <div class="row g-4">
-                <div class="col-md-4 text-center">
-                    <h4>Agendamentos Fáceis</h4>
-                    <p>Permita que seus clientes agendem horários com poucos cliques e reduza cancelamentos e
-                        esquecimentos.</p>
-                </div>
-                <div class="col-md-4 text-center">
-                    <h4>Dashboard Financeiro</h4>
-                    <p>Acompanhe seu faturamento, veja estatísticas e entenda melhor o desempenho da sua barbearia.</p>
-                </div>
-                <div class="col-md-4 text-center">
-                    <h4>Gestão de Clientes</h4>
-                    <p>Tenha controle sobre seu histórico de clientes, preferências e frequência de visitas.</p>
-                </div>
+    <div class="row py-lg-5 justify-content-center homes">
+        <div class="col-lg-8 col-md-10">
+            <h1 class="fw-bold fs-1">
+                Bem-vindo ao 
+                <span style="background: linear-gradient(120deg, black, #FFC107); -webkit-background-clip: text; color: transparent;">BarberGO</span>
+            </h1>
+            <p class="lead text-muted">
+                O BarberGO é a solução completa para gerenciar sua barbearia. Agendamentos online, controle de faturamento,
+                cadastro de clientes e um painel administrativo intuitivo — tudo em um só lugar.
+            </p>
+            <p class="d-flex justify-content-center gap-3 flex-wrap">
+                <a href="{{ path('app_register') }}" class="btn btn-warning fw-bold px-4">Cadastre-se</a>
+                <a href="{{ path('app_login') }}" class="btn btn-dark fw-bold px-4">Entrar</a>
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="bg-light py-5">
+    <div class="container">
+       <div class="row g-4 text-center">
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+                <h4 class="fw-bold mb-3">Agendamentos Fáceis</h4>
+                <p class="card-text">Permita que seus clientes agendem horários com poucos cliques e reduza cancelamentos e esquecimentos.</p>
             </div>
         </div>
-    </section>
-
-    <section class="py-5 text-center bg-dark text-white">
-        <div class="container">
-            <h2 class="mb-4">Experimente o BarberGO agora</h2>
-            <a href="#" class="btn btn-lg btn-warning fw-bold">Comece Grátis</a>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+                <h4 class="fw-bold mb-3">Dashboard Financeiro</h4>
+                <p class="card-text">Acompanhe seu faturamento, veja estatísticas e entenda melhor o desempenho da sua barbearia.</p>
+            </div>
         </div>
-    </section>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+                <h4 class="fw-bold mb-3">Gestão de Clientes</h4>
+                <p class="card-text">Tenha controle sobre seu histórico de clientes, preferências e frequência de visitas.</p>
+            </div>
+        </div>
+    </div>
+</div>
 
+    </div>
+</section>
+<section id="grafico-agendamentos" class="container my-5">
+    <h2 class="text-center mb-4">Agendamentos por Serviço</h2>
+    <div class="d-flex justify-content-center">
+        <canvas id="agendamentosChart" width="800" height="400" class="rounded shadow border"></canvas>
+    </div>
+</section>
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('agendamentosChart').getContext('2d');
+        const agendamentosChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Corte', 'Barba', 'Sobrancelha', 'Pigmentação', 'Luzes', 'Alisamento'],
+                datasets: [{
+                    label: 'Total de Agendamentos',
+                    data: [40, 25, 12, 8, 10, 6], // Aqui pode ser dinâmico vindo do controller Symfony
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.6)',
+                        'rgba(54, 162, 235, 0.6)',
+                        'rgba(255, 206, 86, 0.6)',
+                        'rgba(75, 192, 192, 0.6)',
+                        'rgba(153, 102, 255, 0.6)',
+                        'rgba(255, 159, 64, 0.6)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: true, position: 'top' },
+                    title: { display: true, text: 'Distribuição de Agendamentos' }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 5
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
+  
+   
+{% endblock %}
 {% endblock %}

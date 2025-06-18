@@ -1,16 +1,23 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow p-4  border-bottom border-white border-opacity-25 sticky-top top-0 stick-top top ">
     <div class="container">
+       
         <a class="navbar-brand d-flex align-items-center" href="{{ path('home') }}">
             <img src="{{ asset('images/favicon.ico') }}" alt="Logo BarberGO" width="40" height="40" class="me-2">
             <span class="fs-4 fw-bold">BarberGO</span>
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#main-nav" aria-controls="main-nav" aria-expanded="false" aria-label="Toggle navigation">
+
+      
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="main-nav">
-            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+
+        <!-- Menu -->
+        <div class="collapse navbar-collapse" id="mainNav">
+            <!-- Centraliza os links -->
+            <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a href="{{ path('home') }}" class="nav-link px-3 {% if 'home' in app.request.attributes.get('_route') %}active border-bottom border-4 border-white{% endif %}">
+                   <a href="{{ path('app_home') }}" class="nav-link px-3 {% if 'home' in app.request.attributes.get('_route') %}active border-bottom border-4 border-white{% endif %}">
                         <i class="bi bi-house me-1"></i>
                         <span class="d-lg-inline">Início</span>
                     </a>
@@ -21,13 +28,31 @@
                         <span class="d-lg-inline">Cadastro</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="{{ path('app_login') }}" class="nav-link px-3 {% if 'login' in app.request.attributes.get('_route') %}active border-bottom border-4 border-white{% endif %}">
-                        <i class="bi bi-door-open me-1"></i>
-                        <span class="d-lg-inline">Login</span>
+                 <li class="nav-item">
+                  <a href="#" class="nav-link px-3 ">
+                        <span class="d-lg-inline">Sobre</span>
                     </a>
                 </li>
+            
+               
             </ul>
+
+            <!-- Login / Perfil -->
+            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                <div class="dropdown text-end">
+                    <a href="#" class="d-block text-light text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="{{ asset('images/profile.jpg') }}" alt="Perfil" width="40" height="40" class="rounded-circle border border-light">
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end text-small">
+                        <li><a class="dropdown-item" href="#">Configurações</a></li>
+                        <li><a class="dropdown-item" href="#">Perfil</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{{ path('app_logout') }}">Sair</a></li>
+                    </ul>
+                </div>
+            {% else %}
+                <a href="{{ path('app_login') }}" class="btn btn-warning  ms-3 col-12 col-md-1">Login</a>
+            {% endif %}
         </div>
     </div>
 </nav>
