@@ -20,7 +20,6 @@ class AppointmentTypeForm extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        // exemplo simplificado, os campos id_barber, id_service, appointment_date e appointment_time começam vazios
         $builder
             ->add('barbershop', EntityType::class, [
                 'class' => Barbershop::class,

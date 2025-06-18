@@ -38,7 +38,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'datetime')]
     private ?\DateTimeInterface $updated_at = null;
 
-    // Método chamado antes de persistir no banco para definir timestamps
     #[ORM\PrePersist]
     #[ORM\PreUpdate]
     public function updateTimestamps(): void

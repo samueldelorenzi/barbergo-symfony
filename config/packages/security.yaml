@@ -9,6 +9,12 @@ security:
         class: App\Entity\User
         property: email
 
+  role_hierarchy:
+    ROLE_ADMIN: [ROLE_BARBER, ROLE_CLIENT]
+    ROLE_BARBER: []
+    ROLE_CLIENT: []
+    ROLE_USER: []
+
   firewalls:
     dev:
       pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -29,9 +35,12 @@ security:
 
   access_control:
     - { path: ^/login, roles: PUBLIC_ACCESS }
-    - { path: ^/logout, roles: PUBLIC_ACCESS }
-    - { path: ^/dashboard, roles: ROLE_ADMIN }
+    - { path: ^/register, roles: PUBLIC_ACCESS }
+    - { path: ^/logout, roles: IS_AUTHENTICATED_FULLY }
     - { path: ^/users, roles: ROLE_ADMIN }
+    - { path: ^/barber, roles: ROLE_BARBER }
+    - { path: ^/client, roles: ROLE_CLIENT }
     - { path: ^/barbershop, roles: ROLE_BARBER }
-    - { path: ^/appointment, roles: ROLE_CLIENT }
-    - { path: ^/, roles: PUBLIC_ACCESS }
+    - { path: ^/profile, roles: IS_AUTHENTICATED_FULLY }
+    - { path: ^/$, roles: PUBLIC_ACCESS }
+    - { path: ^/, roles: IS_AUTHENTICATED_FULLY }

@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-        <a class="navbar-brand d-flex align-items-center" href="{{ path('app_home') }}">
+        <a class="navbar-brand d-flex align-items-center" href="{{ path('home') }}">
             <img src="{{ asset('images/favicon.ico') }}" alt="Logo BarberGO" width="40" height="40" class="me-2">
             <span class="fs-4 fw-bold">BarberGO</span>
         </a>
@@ -10,13 +10,13 @@
         <div class="collapse navbar-collapse" id="main-nav">
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a href="{{ path('app_home') }}" class="nav-link px-3 {% if 'home' in app.request.attributes.get('_route') %}active border-bottom border-4 border-white{% endif %}">
+                    <a href="{{ path('home') }}" class="nav-link px-3 {% if 'home' in app.request.attributes.get('_route') %}active border-bottom border-4 border-white{% endif %}">
                         <i class="bi bi-house me-1"></i>
                         <span class="d-lg-inline">Início</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ path('app_registration') }}" class="nav-link px-3 {% if 'registration' in app.request.attributes.get('_route') %}active border-bottom border-4 border-white{% endif %}">
+                    <a href="{{ path('app_register') }}" class="nav-link px-3 {% if 'register' in app.request.attributes.get('_route') %}active border-bottom border-4 border-white{% endif %}">
                         <i class="bi bi-people me-1"></i>
                         <span class="d-lg-inline">Cadastro</span>
                     </a>

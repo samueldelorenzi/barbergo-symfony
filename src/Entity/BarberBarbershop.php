@@ -13,12 +13,10 @@ class BarberBarbershop
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    // Relacionamento com User
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'id_barber', referencedColumnName: 'id', nullable: false)]
     private ?User $id_barber = null;
 
-    // Relacionamento com Barbershop
     #[ORM\ManyToOne(targetEntity: Barbershop::class)]
     #[ORM\JoinColumn(name: 'id_barbershop', referencedColumnName: 'id', nullable: false)]
     private ?Barbershop $id_barbershop = null;

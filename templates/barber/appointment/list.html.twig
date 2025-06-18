@@ -1,0 +1,99 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}BarberGO | Meus Agendamentos{% endblock %}
+
+{% block body %}
+    {# Remove container max-width constraint #}
+    <div class="container-fluid px-lg-5 my-5">
+        <div class="row justify-content-center">
+            {# Use wider column classes - col-xxl-10 will use 10/12 of extra large screens #}
+            <div class="col-12 col-xxl-10">
+                <div class="card shadow-lg border-0 overflow-hidden">
+                    <div class="bg-dark text-white text-center py-4 rounded-top">
+                        <div class="d-flex justify-content-center align-items-center">
+                            <h1 class="display-5 fw-bold mb-0">Próximos Agendamentos</h1>
+                        </div>
+                        <p class="lead mb-0 mt-2"><i class="bi bi-person-circle me-2"></i>{{ user.email }}</p>
+                    </div>
+
+                    <div class="card-body px-4 px-lg-5 pt-4 pb-3">
+                        {% set hasFutureAppointments = false %}
+                        {% set now = date() %}
+                        {% for appointment in appointments %}
+                            {% set appointmentDateTime = appointment.getAppointmentDate().format('Y-m-d') ~ ' ' ~ appointment.getAppointmentTime().format('H:i:s') %}
+                            {% if date(appointmentDateTime) > now %}
+                                {% set hasFutureAppointments = true %}
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if not hasFutureAppointments %}
+                            <div class="text-center my-5 py-4">
+                                <i class="bi bi-calendar-x text-muted fs-1"></i>
+                                <h4 class="text-muted mt-3">Você ainda não possui agendamentos.</h4>
+                            </div>
+                        {% else %}
+                            {# Add table-responsive-lg for better behavior on large screens #}
+                            <div class="table-responsive-lg">
+                                <table class="table table-hover align-middle mb-0">
+                                    <thead class="table-light">
+                                    <tr>
+                                        <th>Cliente</th>
+                                        <th>Serviço</th>
+                                        <th>Dia</th>
+                                        <th>Hora</th>
+                                        <th>Status</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody class="border-top-0">
+                                    {% for appointment in appointments %}
+                                        {% set appointmentDateTime = appointment.getAppointmentDate().format('Y-m-d') ~ ' ' ~ appointment.getAppointmentTime().format('H:i:s') %}
+                                        {% set appointmentDateTimeObj = date(appointmentDateTime) %}
+
+                                        {% if appointmentDateTimeObj > now %}
+                                            {% set diff = appointmentDateTimeObj.diff(now) %}
+                                            <tr class="position-relative">
+                                                <td>
+                                                    {{ appointment.getIdClient().name }}
+                                                </td>
+                                                <td>{{ appointment.getIdService().name }}</td>
+                                                <td class="text-nowrap">{{ appointment.getAppointmentDate()|date('d/m/Y') }}</td>
+                                                <td>
+                                                    <div class="d-flex flex-column">
+                                                        <span class="fw-medium">{{ appointment.getAppointmentTime()|date('H:i') }}</span>
+                                                        <small class="text-muted">
+                                                            Faltam {{ diff.days }} dia{{ diff.days != 1 ? 's' : '' }}
+                                                            {% if diff.h > 0 %}
+                                                                e {{ diff.h }} hora{{ diff.h != 1 ? 's' : '' }}
+                                                            {% endif %}
+                                                        </small>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span class="badge rounded-pill bg-{{ appointment.status == 'confirmado' ? 'success' : (appointment.status == 'cancelado' ? 'danger' : 'warning') }} bg-opacity-10 text-{{ appointment.status == 'confirmado' ? 'success' : (appointment.status == 'cancelado' ? 'danger' : 'warning') }} py-2 px-3">
+                                                        <i class="bi bi-{{ appointment.status == 'confirmado' ? 'check-circle' : (appointment.status == 'cancelado' ? 'x-circle' : 'clock') }} me-1"></i>
+                                                        {{ appointment.status|capitalize }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    {% if hasFutureAppointments %}
+                        <div class="card-footer bg-light border-0 py-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    <i class="bi bi-info-circle me-1"></i> Total de {{ appointments|length }} agendamento(s)
+                                </small>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

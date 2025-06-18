@@ -20,14 +20,12 @@ class Service
     #[ORM\Column(type: 'integer')]
     private ?int $duration_minutes = null;
 
-    // Definindo o tipo DECIMAL para o preço com precisão 10,2
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     private ?string $price = null;
 
     #[ORM\Column(type: 'datetime')]
     private ?\DateTimeInterface $created_at = null;
 
-    // Relacionamento com Barbershop (id_barbershop)
     #[ORM\ManyToOne(targetEntity: Barbershop::class)]
     #[ORM\JoinColumn(name: 'id_barbershop', referencedColumnName: 'id', nullable: false)]
     private ?Barbershop $id_barbershop = null;

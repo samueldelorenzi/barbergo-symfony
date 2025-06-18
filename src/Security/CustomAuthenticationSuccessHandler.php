@@ -22,15 +22,15 @@ class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler
         $roles = $token->getRoleNames();
 
         if (in_array('ROLE_ADMIN', $roles)) {
-            return new RedirectResponse($this->router->generate('app_dashboard'));
+            return new RedirectResponse($this->router->generate('admin_dashboard'));
         }
 
         if (in_array('ROLE_BARBER', $roles)) {
-            return new RedirectResponse($this->router->generate('app_barbershop'));
+            return new RedirectResponse($this->router->generate('barber_dashboard'));
         }
 
         if (in_array('ROLE_CLIENT', $roles)) {
-            return new RedirectResponse($this->router->generate('appointment_new'));
+            return new RedirectResponse($this->router->generate('client_dashboard'));
         }
 
         return new RedirectResponse($this->router->generate('app_home'));
