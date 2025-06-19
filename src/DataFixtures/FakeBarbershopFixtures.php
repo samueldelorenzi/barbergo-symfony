@@ -18,11 +18,6 @@ class FakeBarbershopFixtures extends Fixture implements DependentFixtureInterfac
         $userRepository = $manager->getRepository(User::class);
 
         $creatorUsers = $userRepository->findBy(['role' => 'barber']);
-        $creatorUser = $creatorUsers[0] ?? null;
-
-        if (!$creatorUser) {
-            throw new \Exception('Usuário com ID 1 não encontrado para usar como created_by.');
-        }
 
         $barbershopsData = [
             ['Corte Fino', 'Belo Horizonte', 'Rua dos Andradas, 78', false, '2025-06-06 20:06:53'],
@@ -32,7 +27,9 @@ class FakeBarbershopFixtures extends Fixture implements DependentFixtureInterfac
             ['Elite Barber', 'Porto Alegre', 'Av. Ipiranga, 999', true, '2025-06-06 20:06:53'],
         ];
 
+        $counter = 0;
         foreach ($barbershopsData as [$name, $city, $address, $active, $createdAt]) {
+            $creatorUser = $creatorUsers[$counter] ?? null;
             $barbershop = new Barbershop();
             $barbershop->setCreatedBy($creatorUser);
             $barbershop->setName($name);
@@ -42,6 +39,8 @@ class FakeBarbershopFixtures extends Fixture implements DependentFixtureInterfac
             $barbershop->setCreatedAt(new \DateTimeImmutable($createdAt));
 
             $manager->persist($barbershop);
+
+            $counter++;
         }
 
         $manager->flush();

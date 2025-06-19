@@ -2,8 +2,13 @@
 
 namespace App\Controller\Barber;
 
+use App\Entity\JoinRequest;
+use App\Entity\User;
 use App\Repository\BarberBarbershopRepository;
+use App\Repository\BarbershopRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -41,10 +46,49 @@ final class BarbershopController extends AbstractController
         ]);
     }
     #[Route('/join', name: 'join', methods: ['GET', 'POST'])]
-    public function join(BarberBarbershopRepository $barberBarbershopRepository): Response
+    public function join(BarbershopRepository $barbershopRepository): Response
     {
+        $barbershops = $barbershopRepository->findAll();
         return $this->render('barber/barbershop/join.html.twig', [
-            'controller_name' => 'BarbershopController',
+            'barbershops' => $barbershops,
         ]);
+    }
+    #[Route('/join/{id}', name: 'join_by_id', methods: ['POST'])]
+    public function join_by_id(
+        int $id,
+        BarbershopRepository $barbershopRepository,
+        EntityManagerInterface $em
+        , Request $request
+    ): Response {
+        $barbershop = $barbershopRepository->find($id);
+
+        if (!$barbershop) {
+            $this->addFlash('danger', 'Barbearia não encontrada.');
+            return $this->redirectToRoute('join');
+        }
+
+        /** @var User $user */
+        $user = $this->getUser();
+
+        // Verifica se já existe pedido pendente
+        $existing = $em->getRepository(JoinRequest::class)->findOneBy([
+            'user' => $user,
+            'barbershop' => $barbershop,
+            'status' => 'pending',
+        ]);
+
+        if ($existing) {
+            $this->addFlash('warning', 'Você já enviou um pedido para essa barbearia.');
+            return $this->redirect($request->headers->get('referer'));
+        }
+
+        $joinrequest = new JoinRequest();
+        $joinrequest->setUser($user);
+        $joinrequest->setBarbershop($barbershop);
+        $em->persist($joinrequest);
+        $em->flush();
+
+        $this->addFlash('success', 'Pedido enviado com sucesso! Aguarde a aprovação.');
+        return $this->redirect($request->headers->get('referer'));
     }
 }

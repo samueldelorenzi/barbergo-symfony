@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Entrar em uma Barbearia{% endblock %}
+
+{% block body %}
+    <div class="container py-5">
+        <h2 class="mb-4 text-center">Escolha uma Barbearia para Entrar</h2>
+
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        {% if barbershops is empty %}
+            <div class="alert alert-warning text-center">
+                Nenhuma barbearia disponível no momento.
+            </div>
+        {% else %}
+            <div class="row g-4">
+                {% for barbershop in barbershops %}
+                    <div class="col-md-4">
+                        <form action="{{ path('barber_barbershop_join_by_id', { id: barbershop.id }) }}" method="post" class="text-decoration-none text-dark">
+                            <div class="card text-center shadow-sm p-4 h-100 d-flex flex-column justify-content-between">
+                                <div>
+                                    <i class="bi bi-scissors fs-1 mb-3 text-primary"></i>
+                                    <h5 class="mb-2">{{ barbershop.name }}</h5>
+                                    <p class="text-muted small">{{ barbershop.address }}</p>
+                                </div>
+                                <button type="submit" class="btn btn-outline-primary mt-3">Entrar</button>
+                            </div>
+                        </form>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
