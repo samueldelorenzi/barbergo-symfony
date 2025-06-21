@@ -155,4 +155,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return null;
     }
+    public function isEnabled(): bool
+    {
+        return $this->active;
+    }
 }

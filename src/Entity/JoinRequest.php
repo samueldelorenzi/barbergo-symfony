@@ -44,4 +44,25 @@ class JoinRequest
         $this->barbershop = $barbershop;
         return $this;
     }
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+    public function getBarbershop(): ?Barbershop
+    {
+        return $this->barbershop;
+    }
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+    public function setStatus(string $status): static
+    {
+        $this->status = $status;
+        return $this;
+    }
 }

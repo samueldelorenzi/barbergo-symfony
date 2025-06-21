@@ -1,0 +1,106 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Editar Barbearia{% endblock %}
+
+{% block body %}
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="row g-0 shadow rounded overflow-hidden" style="min-height: 600px;">
+
+                    <div class="col-md-6 bg-dark text-white p-5">
+                        <h2 class="mb-4"><i class="bi bi-scissors me-2"></i>Editar Barbearia</h2>
+
+                        {% for label, messages in app.flashes %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+
+                        {% if barbershop is not defined or barbershop is null %}
+                            <div class="alert alert-danger text-center">
+                                Você não tem permissões para editar essa barbearia.
+                            </div>
+                        {% else %}
+                            {{ form_start(form) }}
+
+                            <div class="mb-4">
+                                {{ form_label(form.name, 'Nome', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.name, {'attr': {'class': 'form-control' ~ (form_errors(form.name) ? ' is-invalid' : '')}}) }}
+                                {% if form_errors(form.name) %}
+                                    <div class="invalid-feedback d-block mt-1">{{ form_errors(form.name)|striptags }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-4">
+                                {{ form_label(form.city, 'Cidade', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.city, {'attr': {'class': 'form-control' ~ (form_errors(form.city) ? ' is-invalid' : '')}}) }}
+                                {% if form_errors(form.city) %}
+                                    <div class="invalid-feedback d-block mt-1">{{ form_errors(form.city)|striptags }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-4">
+                                {{ form_label(form.address, 'Endereço', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.address, {'attr': {'class': 'form-control' ~ (form_errors(form.address) ? ' is-invalid' : '')}}) }}
+                                {% if form_errors(form.address) %}
+                                    <div class="invalid-feedback d-block mt-1">{{ form_errors(form.address)|striptags }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-warning fw-bold">
+                                    <i class="bi bi-save me-1"></i>Salvar Alterações
+                                </button>
+                                <a href="{{ path('barber_barbershop_index') }}" class="btn btn-outline-light fw-bold">
+                                    <i class="bi bi-arrow-left me-1"></i>Voltar
+                                </a>
+                            </div>
+
+                            {{ form_end(form) }}
+                        {% endif %}
+                    </div>
+
+                    <div class="col-md-6 bg-white p-5">
+                        <h4 class="mb-4 d-flex align-items-center text-dark">
+                            <i class="bi bi-bell-fill text-primary me-2"></i>Solicitações para entrar na barbearia
+                        </h4>
+
+                        {% if join_requests is defined and join_requests|length > 0 %}
+                            <ul class="list-group">
+                                {% for request in join_requests %}
+                                    <li class="list-group-item border rounded mb-3">
+                                        <div class="fw-semibold text-dark">{{ request.user.getName() }}</div>
+                                        <div class="text-muted small mb-2">
+                                            <i class="bi bi-envelope me-1"></i>{{ request.user.email }}
+                                        </div>
+                                        <div class="d-flex justify-content-end gap-2">
+                                            <form method="post" action="{{ path('barber_barbershop_join_by_id_approved', {id: request.getId()}) }}">
+                                                <button class="btn btn-sm btn-success" title="Aceitar">
+                                                    <i class="bi bi-check-circle-fill"></i>
+                                                </button>
+                                            </form>
+                                            <form method="post" action="{{ path('barber_barbershop_join_by_id_rejected', {id: request.getId()}) }}">
+                                                <button class="btn btn-sm btn-danger" title="Rejeitar">
+                                                    <i class="bi bi-x-circle-fill"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <div class="alert alert-info text-center">
+                                Nenhuma solicitação de entrada no momento.
+                            </div>
+                        {% endif %}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
