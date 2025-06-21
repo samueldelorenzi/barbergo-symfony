@@ -4,50 +4,70 @@
 
 {% block body %}
     <div class="container py-5">
-        <h2 class="mb-4 text-center">Gerenciamento da Barbearia</h2>
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Painel da Barbearia</h2>
+            <p class="text-muted">Gerencie ou participe de uma barbearia com facilidade.</p>
+        </div>
 
-        {% if barbershop is defined and barbershop %}
+        {% if owner is defined and owner %}
             <div class="text-center mb-4">
-                <h4>Você está vinculado à barbearia: <strong>{{ barbershop.name }}</strong></h4>
+                <h4>Você é o proprietário da barbearia: <strong>{{ barbershop.name }}</strong></h4>
             </div>
 
-            <div class="row g-4">
+            <div class="row justify-content-center g-4">
                 <div class="col-md-4">
                     <a href="{{ path('barber_barbershop_edit', { id: barbershop.id }) }}" class="text-decoration-none text-dark">
-                        <div class="card text-center shadow-sm p-4">
+                        <div class="card h-100 text-center shadow p-4">
                             <i class="bi bi-gear-fill fs-1 mb-3 text-primary"></i>
-                            <h5>Gerenciar Barbearia</h5>
+                            <h5 class="fw-semibold">Gerenciar Barbearia</h5>
                         </div>
                     </a>
                 </div>
                 <div class="col-md-4">
                     <a href="{{ path('barber_barbershop_view', { id: barbershop.id }) }}" class="text-decoration-none text-dark">
-                        <div class="card text-center shadow-sm p-4">
+                        <div class="card h-100 text-center shadow p-4">
                             <i class="bi bi-eye-fill fs-1 mb-3 text-success"></i>
-                            <h5>Visualizar Informações</h5>
+                            <h5 class="fw-semibold">Visualizar Informações</h5>
                         </div>
                     </a>
                 </div>
             </div>
+
+        {% elseif barbershop is defined and barbershop %}
+            <div class="text-center mb-4">
+                <h4>Você está vinculado à barbearia: <strong>{{ barbershop.name }}</strong></h4>
+            </div>
+
+            <div class="row justify-content-center g-4">
+                <div class="col-md-4">
+                    <a href="{{ path('barber_barbershop_view', { id: barbershop.id }) }}" class="text-decoration-none text-dark">
+                        <div class="card h-100 text-center shadow p-4">
+                            <i class="bi bi-eye-fill fs-1 mb-3 text-success"></i>
+                            <h5 class="fw-semibold">Visualizar Informações</h5>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
         {% else %}
             <div class="text-center mb-4">
                 <h4>Você ainda não está vinculado a nenhuma barbearia.</h4>
             </div>
 
-            <div class="row g-4 justify-content-center">
+            <div class="row justify-content-center g-4">
                 <div class="col-md-4">
-                    <a href="{{ path('barber_barbershop_create') }}" class="text-decoration-none text-dark">
-                        <div class="card text-center shadow-sm p-4">
-                            <i class="bi bi-plus-circle-fill fs-1 mb-3 text-primary"></i>
-                            <h5>Criar Nova Barbearia</h5>
+                    <a href="{{ path('barber_barbershop_join') }}" class="text-decoration-none text-dark">
+                        <div class="card h-100 text-center shadow p-4">
+                            <i class="bi bi-door-open-fill fs-1 mb-3 text-success"></i>
+                            <h5 class="fw-semibold">Entrar em uma Barbearia</h5>
                         </div>
                     </a>
                 </div>
                 <div class="col-md-4">
-                    <a href="{{ path('barber_barbershop_join') }}" class="text-decoration-none text-dark">
-                        <div class="card text-center shadow-sm p-4">
-                            <i class="bi bi-door-open-fill fs-1 mb-3 text-success"></i>
-                            <h5>Entrar em uma Barbearia</h5>
+                    <a href="{{ path('barber_barbershop_create') }}" class="text-decoration-none text-dark">
+                        <div class="card h-100 text-center shadow p-4">
+                            <i class="bi bi-plus-circle fs-1 mb-3 text-primary"></i>
+                            <h5 class="fw-semibold">Criar sua Barbearia</h5>
                         </div>
                     </a>
                 </div>
