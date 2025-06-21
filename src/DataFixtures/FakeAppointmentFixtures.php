@@ -19,7 +19,7 @@ class FakeAppointmentFixtures extends Fixture implements DependentFixtureInterfa
         $userRepository = $manager->getRepository(User::class);
         $serviceRepository = $manager->getRepository(Service::class);
 
-        $clients = $userRepository->findBy(['role' => 'user']);
+        $clients = $userRepository->findBy(['role' => 'client']);
         $barbers = $userRepository->findBy(['role' => 'barber']);
         $services = $serviceRepository->findAll();
 

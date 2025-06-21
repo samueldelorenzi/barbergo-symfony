@@ -16,7 +16,7 @@ class FakeBarberBarbershopFixtures extends Fixture implements DependentFixtureIn
     {
         $faker = Factory::create('pt_BR');
 
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             $barberBarbershop = new BarberBarbershop();
             $userRepository = $manager->getRepository(User::class);
             $barbershopRepository = $manager->getRepository(Barbershop::class);
@@ -24,7 +24,7 @@ class FakeBarberBarbershopFixtures extends Fixture implements DependentFixtureIn
             $barbers = $userRepository->findBy(['role' => 'barber']);
             $barber = $barbers[$i] ?? null;
             $barbershops = $barbershopRepository->findAll();
-            $barbershop = $barbershops[$i] ?? null;
+            $barbershop = $barbershops[$i/2] ?? null;
 
             $barberBarbershop->setIdBarber($barber);
             $barberBarbershop->setIdBarbershop($barbershop);

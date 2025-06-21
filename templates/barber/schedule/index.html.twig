@@ -1,0 +1,309 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}BarberGO | Definir Agenda{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .schedule-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .day-card {
+            flex: 1 0 calc(100% / 4 - 16px);
+            max-width: calc(100% / 4 - 16px);
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 12px;
+            background-color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 160px;
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            .day-card {
+                flex: 1 0 calc(50% - 16px);
+                max-width: calc(50% - 16px);
+            }
+        }
+
+        .day-name {
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 8px;
+        }
+
+        .time-box {
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            background: #f1f1f1;
+            width: 72px;
+            height: 32px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .time-controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .arrow-btn {
+            border: none;
+            background: #e9ecef;
+            color: #333;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            transition: background 0.2s;
+        }
+
+        .arrow-btn:hover {
+            background: #d0d0d0;
+        }
+
+        .time-container {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .time-label {
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .disabled {
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        .error-border {
+            border-color: red !important;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 12px;
+            margin-top: 6px;
+            text-align: center;
+            display: none;
+        }
+
+        .error-visible {
+            display: block !important;
+        }
+
+        .inactive-day {
+            background-color: #f8d7da !important;
+        }
+
+        .close-day-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            border: none;
+            background: #dc3545;
+            color: #fff;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            line-height: 1;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .close-day-btn:hover {
+            background-color: #b02a37;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container py-4">
+        <h4 class="text-center mb-4">Defina seus horários</h4>
+
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        <form method="post" action="{{ path('barber_schedule_save') }}" id="schedule-form">
+            {% set weekDays = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'] %}
+
+            {% set hasActiveSchedule = false %}
+            {% for i in 0..6 %}
+                {% if existingSchedules[i] is defined and existingSchedules[i] %}
+                    {% set hasActiveSchedule = true %}
+                {% endif %}
+            {% endfor %}
+
+            <div class="schedule-grid">
+                {% for i, day in weekDays %}
+                    {% if hasActiveSchedule %}
+                        {% set schedule = existingSchedules[i] ?? null %}
+                        {% set active = (schedule and schedule.isActive()) ? '1' : '0' %}
+                        {% set startTime = schedule.getStartTimeString() ?? '08:00' %}
+                        {% set endTime = schedule.getEndTimeString() ?? '17:00' %}
+                    {% else %}
+                        {% set active = (i == 6) ? '0' : '1' %}
+                        {% set startTime = '08:00' %}
+                        {% set endTime = '17:00' %}
+                    {% endif %}
+
+                    <div class="day-card {% if active == '0' %}inactive-day{% endif %}" data-day-index="{{ i }}" data-active="{{ active }}">
+                        <div class="day-name">{{ day }}</div>
+                        <button type="button" class="close-day-btn" onclick="toggleDay({{ i }})">×</button>
+
+                        <input type="hidden" name="schedule[{{ i }}][day]" value="{{ i }}">
+                        <input type="hidden" name="schedule[{{ i }}][start]" id="start_input_{{ i }}" value="{{ startTime }}">
+                        <input type="hidden" name="schedule[{{ i }}][end]" id="end_input_{{ i }}" value="{{ endTime }}">
+                        <input type="hidden" name="schedule[{{ i }}][active]" id="active_input_{{ i }}" value="{{ active }}">
+
+                        <div class="time-container">
+                            <div class="time-controls">
+                                <div class="time-label">Início</div>
+                                <button type="button" class="arrow-btn" onclick="changeTime('{{ i }}', 'start', -30)">
+                                    <i class="fas fa-chevron-up"></i>
+                                </button>
+                                <div id="start_display_{{ i }}" class="time-box">{{ startTime }}</div>
+                                <button type="button" class="arrow-btn" onclick="changeTime('{{ i }}', 'start', 30)">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </div>
+                            <div class="time-controls">
+                                <div class="time-label">Fim</div>
+                                <button type="button" class="arrow-btn" onclick="changeTime('{{ i }}', 'end', -30)">
+                                    <i class="fas fa-chevron-up"></i>
+                                </button>
+                                <div id="end_display_{{ i }}" class="time-box">{{ endTime }}</div>
+                                <button type="button" class="arrow-btn" onclick="changeTime('{{ i }}', 'end', 30)">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="error_msg_{{ i }}" class="error-message">
+                            O horário de início deve ser menor que o horário de fim.
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="align-items-center d-flex justify-content-center mt-4">
+                <button type="submit" id="submit-btn" class="btn btn-success px-4 py-2 disabled" disabled>
+                    <i class="bi bi-save me-1"></i> Salvar Horários
+                </button>
+            </div>
+        </form>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        const timeSlots = [];
+        for (let h = 0; h < 24; h++) {
+            timeSlots.push(...['00', '30'].map(m => `${String(h).padStart(2, '0')}:${m}`));
+        }
+
+        function changeTime(index, type, step) {
+            const display = document.getElementById(`${type}_display_${index}`);
+            const input = document.getElementById(`${type}_input_${index}`);
+            const currentTime = display.innerText;
+            const pos = timeSlots.indexOf(currentTime);
+            if (pos === -1) return;
+
+            const newPos = pos + (step / 30);
+            if (newPos >= 0 && newPos < timeSlots.length) {
+                const newTime = timeSlots[newPos];
+                display.innerText = newTime;
+                input.value = newTime;
+                validateForm();
+            }
+        }
+
+        function toggleDay(index) {
+            const card = document.querySelector(`.day-card[data-day-index='${index}']`);
+            const isActive = card.dataset.active === '1';
+            const activeInput = document.getElementById(`active_input_${index}`);
+
+            if (isActive) {
+                card.classList.add('inactive-day');
+                card.dataset.active = '0';
+                activeInput.value = '0';
+            } else {
+                card.classList.remove('inactive-day');
+                card.dataset.active = '1';
+                activeInput.value = '1';
+            }
+
+            validateForm();
+        }
+
+        function validateForm() {
+            let isValid = true;
+
+            document.querySelectorAll('.day-card').forEach(card => {
+                const i = card.dataset.dayIndex;
+                const active = card.dataset.active === '1';
+                const errorMsg = document.getElementById(`error_msg_${i}`);
+
+                if (!active) {
+                    errorMsg.classList.remove('error-visible');
+                    card.classList.remove('error-border');
+                    return;
+                }
+
+                const start = document.getElementById(`start_display_${i}`).innerText;
+                const end = document.getElementById(`end_display_${i}`).innerText;
+                const startInput = document.getElementById(`start_input_${i}`);
+                const endInput = document.getElementById(`end_input_${i}`);
+
+                startInput.value = start;
+                endInput.value = end;
+
+                const [sh, sm] = start.split(':').map(Number);
+                const [eh, em] = end.split(':').map(Number);
+                const startMinutes = sh * 60 + sm;
+                const endMinutes = eh * 60 + em;
+
+                if (endMinutes <= startMinutes) {
+                    isValid = false;
+                    card.classList.add('error-border');
+                    errorMsg.classList.add('error-visible');
+                } else {
+                    card.classList.remove('error-border');
+                    errorMsg.classList.remove('error-visible');
+                }
+            });
+
+            const btn = document.getElementById('submit-btn');
+            btn.disabled = !isValid;
+            btn.classList.toggle('disabled', !isValid);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            validateForm();
+        });
+    </script>
+{% endblock %}

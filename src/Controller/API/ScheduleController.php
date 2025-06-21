@@ -32,31 +32,6 @@ class ScheduleController extends AbstractController
         $this->serviceRepository = $serviceRepository;
     }
 
-    #[Route('', name: 'list', methods: ['GET'])]
-    public function list()
-    {
-    }
-
-    #[Route('/{id}', name: 'show', methods: ['GET'])]
-    public function show(int $id)
-    {
-    }
-
-    #[Route('', name: 'create', methods: ['POST'])]
-    public function create()
-    {
-    }
-
-    #[Route('/{id}', name: 'update', methods: ['PUT', 'PATCH'])]
-    public function update(int $id)
-    {
-    }
-
-    #[Route('/{id}', name: 'delete', methods: ['DELETE'])]
-    public function delete(int $id)
-    {
-    }
-
     #[Route('/available_days/{barberId}', name: 'available_days', methods: ['GET'])]
     public function getAvailableDates(int $barberId): JsonResponse
     {
@@ -65,32 +40,55 @@ class ScheduleController extends AbstractController
             return new JsonResponse(['error' => 'Barber not found'], 404);
         }
 
-        $schedules = $this->scheduleRepository->findBy(['id_barber' => $barber]);
+        $schedules = $this->scheduleRepository->createQueryBuilder('s')
+            ->where('s.id_barber = :barberId')
+            ->setParameter('barberId', $barberId)
+            ->orderBy('s.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+
         if (!$schedules) {
             return new JsonResponse(['error' => 'No schedule found for this barber'], 404);
+        }
+
+        $latestSchedulePerDay = [];
+        foreach ($schedules as $schedule) {
+            $weekDay = (int)$schedule->getWeekDay();
+            if (!isset($latestSchedulePerDay[$weekDay]) || $schedule->getId() > $latestSchedulePerDay[$weekDay]->getId()) {
+                $latestSchedulePerDay[$weekDay] = $schedule;
+            }
+        }
+
+        $activeDays = [];
+        foreach ($latestSchedulePerDay as $weekDay => $schedule) {
+            if ($schedule->isActive()) {
+                $activeDays[$weekDay] = true;
+            }
         }
 
         $dates = [];
         $dayNames = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
         $today = new \DateTimeImmutable();
+        $i = 0;
 
-        for ($i = 0; $i < 7; $i++) {
+        while (count($dates) < 7) {
             $date = $today->modify("+$i days");
             $dayOfWeek = (int)$date->format('w');
 
-            foreach ($schedules as $schedule) {
-                if ((int)$schedule->getWeekDay() === (($dayOfWeek === 0) ? 7 : $dayOfWeek)) {
-                    $dates[] = [
-                        'date' => $date->format('Y-m-d'),
-                        'dayName' => $dayNames[$dayOfWeek]
-                    ];
-                    break;
-                }
+            if (!empty($activeDays[$dayOfWeek])) {
+                $dates[] = [
+                    'date' => $date->format('Y-m-d'),
+                    'dayName' => $dayNames[$dayOfWeek]
+                ];
             }
+
+            $i++;
         }
 
         return new JsonResponse($dates);
     }
+
+
 
     #[Route('/available_times/{barberId}', name: 'available_times', methods: ['GET'])]
     public function getAvailableTimes(int $barberId, Request $request): JsonResponse
@@ -110,20 +108,29 @@ class ScheduleController extends AbstractController
         }
 
         $serviceDuration = $service->getDurationMinutes();
-        $weekday = (new \DateTime($date))->format('N');
+        $weekday = (int)(new \DateTime($date))->format('w');
 
-        $schedule = $this->scheduleRepository->findOneBy([
-            'id_barber' => $barber,
-            'week_day' => $weekday
-        ]);
+        $schedule = $this->scheduleRepository->createQueryBuilder('s')
+            ->where('s.id_barber = :barber')
+            ->andWhere('s.week_day = :week_day')
+            ->setParameter('barber', $barber)
+            ->setParameter('week_day', $weekday)
+            ->orderBy('s.id', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getResult();
+        $schedule = $schedule[0];
 
-        if (!$schedule) {
-            return new JsonResponse([]);
+        if (!$schedule || !$schedule->isActive()) {
+            return new JsonResponse([]); // sem agenda ou inativo
         }
 
         $start = new \DateTime($date . ' ' . $schedule->getStartTime()->format('H:i:s'));
         $end = new \DateTime($date . ' ' . $schedule->getEndTime()->format('H:i:s'));
 
+
+        $lunchStart = new \DateTime($date . ' 12:00:00');
+        $lunchEnd = new \DateTime($date . ' 13:30:00');
         $appointments = $this->appointmentsRepository->createQueryBuilder('a')
             ->where('a.id_barber = :barber')
             ->andWhere('a.appointment_date = :date')
@@ -143,6 +150,11 @@ class ScheduleController extends AbstractController
             $slotEnd = (clone $start)->modify("+{$serviceDuration} minutes");
 
             if ($slotEnd > $end) break;
+
+            if ($start >= $lunchStart && $start < $lunchEnd) {
+                $start->modify('+30 minutes');
+                continue;
+            }
 
             if (!in_array($slot, $bookedTimes)) {
                 $times[] = $slot;
