@@ -27,6 +27,9 @@ class Schedule
     #[ORM\Column(type: Types::TIME_MUTABLE)]
     private ?\DateTimeInterface $end_time = null;
 
+    #[ORM\Column(type: 'boolean', options: ['default' => 1])]
+    private bool $active = true;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -59,6 +62,11 @@ class Schedule
         return $this->start_time;
     }
 
+    public function getStartTimeString(): ?string
+    {
+        return $this->start_time->format('H:i');
+    }
+
     public function setStartTime(\DateTimeInterface $start_time): static
     {
         $this->start_time = $start_time;
@@ -70,9 +78,25 @@ class Schedule
         return $this->end_time;
     }
 
+    public function getEndTimeString(): ?string
+    {
+        return $this->end_time->format('H:i');
+    }
+
     public function setEndTime(\DateTimeInterface $end_time): static
     {
         $this->end_time = $end_time;
+        return $this;
+    }
+
+    public function isActive(): bool
+    {
+        return $this->active;
+    }
+
+    public function setActive(bool $active): static
+    {
+        $this->active = $active;
         return $this;
     }
 }

@@ -25,8 +25,8 @@ class FakeUsersFixtures extends Fixture
             $user = new User();
             $user->setName($faker->name());
             $user->setEmail($faker->unique()->safeEmail());
-            $user->setRole('user');
-            $user->setActive($faker->boolean(70));
+            $user->setRole('client');
+            $user->setActive($faker->boolean(100));
             $user->setPassword($this->passwordHasher->hashPassword($user, '123'));
             $user->setCreatedAt(\DateTimeImmutable::createFromMutable($faker->dateTimeBetween('-1 year', 'now')));
             $user->setUpdatedAt(new \DateTimeImmutable());
@@ -34,12 +34,12 @@ class FakeUsersFixtures extends Fixture
             $manager->persist($user);
         }
 
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 20; $i++) {
             $user = new User();
             $user->setName($faker->name());
             $user->setEmail($faker->unique()->safeEmail());
             $user->setRole('barber');
-            $user->setActive($faker->boolean(70));
+            $user->setActive($faker->boolean(100));
             $user->setPassword($this->passwordHasher->hashPassword($user, '123'));
             $user->setCreatedAt(\DateTimeImmutable::createFromMutable($faker->dateTimeBetween('-1 year', 'now')));
             $user->setUpdatedAt(new \DateTimeImmutable());
