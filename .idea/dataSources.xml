@@ -8,5 +8,12 @@
       <jdbc-url>jdbc:mysql://localhost:3306/barbergo-symfony</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="barbergo-symfony_test@localhost" uuid="7de4ae22-803b-465e-8aea-45ce1213fcf4">
+      <driver-ref>mysql.8</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://localhost:3306/barbergo-symfony_test</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>
