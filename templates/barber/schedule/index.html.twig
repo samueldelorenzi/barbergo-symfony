@@ -166,7 +166,7 @@
                         {% set startTime = schedule.getStartTimeString() ?? '08:00' %}
                         {% set endTime = schedule.getEndTimeString() ?? '17:00' %}
                     {% else %}
-                        {% set active = (i == 6) ? '0' : '1' %}
+                        {% set active = (i == 0) ? '0' : '1' %}
                         {% set startTime = '08:00' %}
                         {% set endTime = '17:00' %}
                     {% endif %}

@@ -150,7 +150,10 @@
                         success: function(services) {
                             let serviceOptions = '<option value="">Selecione um serviço</option>';
                             services.forEach(function(service) {
-                                serviceOptions += `<option value="${service.id}">${service.name}</option>`;
+                                const formattedPrice = parseFloat(service.price).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                                serviceOptions += `<option value="${service.id}">
+                                ${service.name} - ${service.duration_minutes}min - ${formattedPrice}
+                            </option>`;
                             });
                             $('#appointment_type_form_id_service').html(serviceOptions).prop('disabled', false);
                             checkFormReady();

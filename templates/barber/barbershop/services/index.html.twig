@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}BarberGO | Serviços{% endblock %}
+
+{% block body %}
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-10">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-dark text-white text-center">
+                        <h3 class="mb-0">Serviços</h3>
+                    </div>
+                    <div class="card-body">
+                        {% for label, messages in app.flashes %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ label }}">{{ message }}</div>
+                            {% endfor %}
+                        {% endfor %}
+
+                        <a href="{{ path('barber_barbershop_services_new') }}" class="btn btn-success mb-3">
+                            <i class="bi bi-plus-circle me-1"></i> Novo Serviço
+                        </a>
+
+                        <div class="table-responsive">
+                            <table class="table table-hover text-center align-middle">
+                                <thead class="table-light">
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Duração</th>
+                                    <th>Preço</th>
+                                    <th>Barbearia</th>
+                                    <th>Ações</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for service in services %}
+                                    <tr>
+                                        <td>{{ service.name }}</td>
+                                        <td>{{ service.durationMinutes }} min</td>
+                                        <td>R$ {{ service.price|number_format(2, ',', '.') }}</td>
+                                        <td>{{ service.idBarbershop.name }}</td>
+                                        <td>
+                                            <div class="d-flex justify-content-center gap-2">
+                                                <a href="{{ path('barber_barbershop_services_edit', {id: service.id}) }}" class="btn btn-sm btn-warning">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <form method="post" action="{{ path('barber_barbershop_services_delete', {id: service.id}) }}" onsubmit="return confirm('Deseja realmente deletar este serviço?')">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('delete_service_' ~ service.id) }}">
+                                                    <button class="btn btn-sm btn-danger">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="6">Nenhum serviço encontrado.</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

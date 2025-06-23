@@ -6,6 +6,14 @@
     <div class="container py-5">
         <h2 class="mb-4 text-center">Bem-vindo, {{ app.user.name }}!</h2>
 
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+
         <div class="row g-4">
             <div class="col-md-4">
                 <a href="{{ path('barber_barbershop_index') }}" class="text-decoration-none text-dark">
