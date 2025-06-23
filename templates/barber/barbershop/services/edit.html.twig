@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}BarberGO | Editar Serviço{% endblock %}
+
+{% block body %}
+    <div class="d-flex justify-content-center align-items-center w-100 mx-auto my-5">
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h2 class="text-center mb-4">Editar Serviço</h2>
+
+                    {% for label, messages in app.flashes %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ label }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endfor %}
+
+                    {{ form_start(form) }}
+
+                    <div class="mb-3">
+                        {{ form_label(form.name, 'Nome do Serviço', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.name, {
+                            'attr': {
+                                'class': 'form-control' ~ (form_errors(form.name) ? ' is-invalid' : '')
+                            }
+                        }) }}
+                        <div class="text text-danger small">{{ form_errors(form.name)|striptags }}</div>
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(form.duration_minutes, 'Duração (minutos)', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.duration_minutes, {
+                            'attr': {
+                                'class': 'form-control' ~ (form_errors(form.duration_minutes) ? ' is-invalid' : '')
+                            }
+                        }) }}
+                        <div class="text text-danger small">{{ form_errors(form.duration_minutes)|striptags }}</div>
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(form.price, 'Preço', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.price, {
+                            'attr': {
+                                'class': 'form-control' ~ (form_errors(form.price) ? ' is-invalid' : '')
+                            }
+                        }) }}
+                        <div class="text text-danger small">{{ form_errors(form.price)|striptags }}</div>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-warning fw-bold">
+                            <i class="bi bi-save me-1"></i>
+                            Salvar Alterações
+                        </button>
+                    </div>
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

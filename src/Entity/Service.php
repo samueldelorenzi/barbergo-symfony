@@ -26,6 +26,9 @@ class Service
     #[ORM\Column(type: 'datetime')]
     private ?\DateTimeInterface $created_at = null;
 
+    #[ORM\Column(type: 'boolean')]
+    private bool $active = true;
+
     #[ORM\ManyToOne(targetEntity: Barbershop::class)]
     #[ORM\JoinColumn(name: 'id_barbershop', referencedColumnName: 'id', nullable: false)]
     private ?Barbershop $id_barbershop = null;
@@ -95,6 +98,17 @@ class Service
     public function setIdBarbershop(Barbershop $id_barbershop): static
     {
         $this->id_barbershop = $id_barbershop;
+        return $this;
+    }
+    public function isActive(): ?bool
+    {
+        return $this->active;
+    }
+
+    public function setActive(bool $active): static
+    {
+        $this->active = $active;
+
         return $this;
     }
 }
