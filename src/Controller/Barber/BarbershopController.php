@@ -74,35 +74,30 @@ final class BarbershopController extends AbstractController
         ]);
     }
 
-    #[Route('/view/{id}', name: 'view', methods: ['GET', 'POST'])]
-    public function view(Barbershop $barbershop, Request $request): Response
+    #[Route('/view', name: 'view', methods: ['GET', 'POST'])]
+    public function view(Request $request): Response
     {
-        $relations = $this->barberBarbershopRepository->findBy(['id_barbershop' => $barbershop->getId()]);
+        $currentUser = $this->getCurrentUser();
 
+        $relations = $this->barberBarbershopRepository->findBy(['id_barber' => $currentUser->getId()]);
+
+        if (empty($relations)) {
+            $this->addFlash('danger', 'Você não está vinculado a nenhuma barbearia.');
+            return $this->redirectToRoute('barber_dashboard');
+        }
+
+        $barbershop = $relations[0]->getIdBarbershop();
+
+        $allRelations = $this->barberBarbershopRepository->findBy(['id_barbershop' => $barbershop->getId()]);
         $barbers = [];
         $seenIds = [];
 
-        foreach ($relations as $relation) {
+        foreach ($allRelations as $relation) {
             $barber = $relation->getIdBarber();
             if (!in_array($barber->getId(), $seenIds, true)) {
                 $seenIds[] = $barber->getId();
                 $barbers[] = $barber;
             }
-        }
-
-        $currentUser = $this->getCurrentUser();
-        $isParticipant = false;
-        foreach ($barbers as $barber) {
-            if ($barber->getId() === $currentUser->getId()) {
-                $isParticipant = true;
-                break;
-            }
-        }
-
-        if (!$isParticipant) {
-            $this->addFlash('danger', 'Você não tem permissão para visualizar essa barbearia.');
-            $referer = $request->headers->get('referer');
-            return $this->redirect($referer ?? $this->generateUrl('barber_dashboard'));
         }
 
         $owner = $barbershop->getCreatedBy();
