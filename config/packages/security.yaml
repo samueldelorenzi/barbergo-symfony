@@ -42,5 +42,6 @@ security:
     - { path: ^/client, roles: ROLE_CLIENT }
     - { path: ^/barbershop, roles: ROLE_BARBER }
     - { path: ^/profile, roles: IS_AUTHENTICATED_FULLY }
+    - { path: ^/about, roles: PUBLIC_ACCESS }
     - { path: ^/$, roles: PUBLIC_ACCESS }
     - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
