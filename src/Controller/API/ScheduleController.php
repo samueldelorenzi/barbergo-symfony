@@ -140,6 +140,7 @@ class ScheduleController extends AbstractController
             $appointments
         );
 
+        $now = new \DateTime();
         $times = [];
         while ($start <= $end) {
             $slot = $start->format('H:i');
@@ -147,6 +148,11 @@ class ScheduleController extends AbstractController
 
             if ($slotEnd > $end) {
                 break;
+            }
+
+            if ($start < $now && $date === $now->format('Y-m-d')) {
+                $start->modify('+30 minutes');
+                continue;
             }
 
             if ($start >= $lunchStart && $start < $lunchEnd) {
