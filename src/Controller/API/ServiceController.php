@@ -22,36 +22,6 @@ class ServiceController extends AbstractController
         $this->barbershopRepository = $barbershopRepository;
     }
 
-    #[Route('', name: 'list', methods: ['GET'])]
-    public function list(): JsonResponse
-    {
-        return new JsonResponse(['services' => []]);
-    }
-
-    #[Route('/{id}', name: 'show', methods: ['GET'])]
-    public function show(int $id): JsonResponse
-    {
-        return new JsonResponse([]);
-    }
-
-    #[Route('', name: 'create', methods: ['POST'])]
-    public function create(): JsonResponse
-    {
-        return new JsonResponse([]);
-    }
-
-    #[Route('/{id}', name: 'update', methods: ['PUT', 'PATCH'])]
-    public function update(int $id): JsonResponse
-    {
-        return new JsonResponse([]);
-    }
-
-    #[Route('/{id}', name: 'delete', methods: ['DELETE'])]
-    public function delete(int $id): JsonResponse
-    {
-        return new JsonResponse([]);
-    }
-
     #[Route('/barbershop/{barbershopId}', name: 'get_services_by_barbershop', methods: ['GET'])]
     public function getServiceByBarbershop(int $barbershopId): JsonResponse
     {

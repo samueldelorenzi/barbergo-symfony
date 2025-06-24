@@ -46,7 +46,7 @@ class ProfileController extends AbstractController
                 return $this->redirect($request->headers->get('referer'));
             }
 
-            $this->addFlash('error', 'Todos os campos são obrigatórios.');
+            $this->addFlash('danger', 'Todos os campos são obrigatórios.');
         }
 
         return $this->render('user/update.html.twig', [

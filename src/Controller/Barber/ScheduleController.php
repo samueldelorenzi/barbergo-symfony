@@ -2,15 +2,7 @@
 
 namespace App\Controller\Barber;
 
-use App\Entity\BarberBarbershop;
-use App\Entity\Barbershop;
-use App\Entity\JoinRequest;
 use App\Entity\Schedule;
-use App\Entity\User;
-use App\Form\BarbershopTypeForm;
-use App\Repository\BarberBarbershopRepository;
-use App\Repository\BarbershopRepository;
-use App\Repository\JoinRequestRepository;
 use App\Repository\ScheduleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,13 +13,32 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/barber/schedule', name: 'barber_schedule_')]
 final class ScheduleController extends AbstractController
 {
-    #[Route('', name: 'index', methods: ['GET'])]
-    public function index(ScheduleRepository $scheduleRepository): Response
+    private EntityManagerInterface $em;
+    private ScheduleRepository $scheduleRepository;
+    private $user;
+
+    public function __construct(EntityManagerInterface $em, ScheduleRepository $scheduleRepository)
     {
-        $user = $this->getUser();
+        $this->em = $em;
+        $this->scheduleRepository = $scheduleRepository;
+    }
+
+    private function getCurrentUser()
+    {
+        if (!$this->user) {
+            $this->user = $this->getUser();
+        }
+        return $this->user;
+    }
+
+    #[Route('', name: 'index', methods: ['GET'])]
+    public function index(): Response
+    {
+        $user = $this->getCurrentUser();
         $schedules = [];
+
         for ($i = 0; $i <= 6; $i++) {
-            $schedule = $scheduleRepository->createQueryBuilder('s')
+            $schedule = $this->scheduleRepository->createQueryBuilder('s')
                 ->where('s.id_barber = :barber')
                 ->andWhere('s.week_day = :day')
                 ->setParameter('barber', $user)
@@ -41,45 +52,48 @@ final class ScheduleController extends AbstractController
                 $schedules[] = $schedule;
             }
         }
+
         return $this->render('barber/schedule/index.html.twig', [
             'user' => $user,
             'existingSchedules' => $schedules
         ]);
     }
+
     #[Route('', name: 'save', methods: ['POST'])]
-    public function save(Request $request, EntityManagerInterface $em): Response
+    public function save(Request $request): Response
     {
+        $referer = $request->headers->get('referer');
         $data = $request->request->all();
 
         if (!isset($data['schedule']) || !is_array($data['schedule'])) {
             $this->addFlash('danger', 'Erro ao atualizar horários!');
-            return $this->redirect($request->headers->get('referer'));
+            return $this->redirect($referer);
         }
 
         $schedulesData = $data['schedule'];
-        $user = $this->getUser();
+        $user = $this->getCurrentUser();
 
         foreach ($schedulesData as $item) {
             $startTime = new \DateTime($item['start']);
             $endTime = new \DateTime($item['end']);
             if ($startTime >= $endTime) {
                 $this->addFlash('danger', "O horário de início não pode ser maior ou igual ao horário de término. Dia: {$item['day']}, Início: {$item['start']}, Fim: {$item['end']}");
-                return $this->redirect($request->headers->get('referer'));
+                return $this->redirect($referer);
             }
 
             $schedule = new Schedule();
             $schedule->setIdBarber($user);
             $schedule->setWeekDay((string)$item['day']);
-            $schedule->setStartTime(new \DateTime($item['start']));
-            $schedule->setEndTime(new \DateTime($item['end']));
+            $schedule->setStartTime($startTime);
+            $schedule->setEndTime($endTime);
             $schedule->setActive($item['active']);
 
-            $em->persist($schedule);
+            $this->em->persist($schedule);
         }
 
-        $em->flush();
+        $this->em->flush();
         $this->addFlash('success', 'Horários atualizados com sucesso!');
 
-        return $this->redirect($request->headers->get('referer'));
+        return $this->redirect($referer);
     }
 }

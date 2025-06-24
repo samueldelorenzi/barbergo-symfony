@@ -53,8 +53,8 @@ final class UserController extends AbstractController
 
             $role = $form->get('role')->getData();
             $user->setRole($role);
-
             $user->setActive(true);
+
             $this->entityManager->persist($user);
             $this->entityManager->flush();
 
@@ -79,9 +79,11 @@ final class UserController extends AbstractController
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, User $user): Response
     {
+        $referer = $request->headers->get('referer');
+
         if ($this->isSelf($user)) {
             $this->addFlash('warning', 'Você não pode editar seu próprio usuário.');
-            return $this->redirect($request->headers->get('referer'));
+            return $this->redirect($referer);
         }
 
         $form = $this->createForm(UserFullForm::class, $user);
@@ -97,7 +99,7 @@ final class UserController extends AbstractController
 
             $this->entityManager->flush();
             $this->addFlash('success', 'Usuário atualizado com sucesso!');
-            return $this->redirect($request->headers->get('referer'));
+            return $this->redirect($referer);
         }
 
         return $this->render('admin/users/edit.html.twig', [
@@ -106,32 +108,32 @@ final class UserController extends AbstractController
         ]);
     }
 
+    #[Route('/{id}', name: 'delete', methods: ['POST'])]
+    public function delete(Request $request, User $user): Response
+    {
+        $referer = $request->headers->get('referer');
+
+        if ($this->isSelf($user)) {
+            $this->addFlash('warning', 'Você não pode desativar seu próprio usuário.');
+            return $this->redirect($referer);
+        }
+
+        if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('_token'))) {
+            $user->setActive(false);
+            $user->setUpdatedAt(new \DateTimeImmutable());
+
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
+
+            $this->addFlash('success', 'Usuário desativado com sucesso!');
+        }
+
+        return $this->redirect($referer);
+    }
+
     private function isSelf(User $user): bool
     {
         $userLogged = $this->getUser();
         return $userLogged instanceof User && $userLogged->getId() === $user->getId();
-    }
-
-    #[Route('/{id}', name: 'delete', methods: ['POST'])]
-    public function delete(Request $request, User $user): Response
-    {
-        if ($this->isSelf($user)) {
-            $this->addFlash('warning', 'Você não pode desativar seu próprio usuário.');
-            return $this->redirect($request->headers->get('referer'));
-        }
-
-        if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('_token'))) {
-            $userEntity = $this->userRepository->find($user->getId());
-            if (!$userEntity) {
-                throw $this->createNotFoundException('User not found');
-            }
-            $userEntity->setActive(false);
-            $userEntity->setUpdatedAt(new \DateTimeImmutable());
-            $this->entityManager->persist($userEntity);
-            $this->entityManager->flush();
-            $this->addFlash('success', 'Usuário desativado com sucesso!');
-        }
-
-        return $this->redirect($request->headers->get('referer'));
     }
 }

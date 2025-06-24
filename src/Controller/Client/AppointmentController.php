@@ -14,34 +14,39 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-
 #[Route('/client/appointment', name: 'client_appointment_')]
 final class AppointmentController extends AbstractController
 {
+    private EntityManagerInterface $em;
+
+    public function __construct(EntityManagerInterface $em)
+    {
+        $this->em = $em;
+    }
+
     #[Route('', name: 'new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $em): Response
+    public function new(Request $request): Response
     {
         $form = $this->createForm(AppointmentTypeForm::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
             $data = $request->request->all();
-            $formData = $data['appointment_type_form'];
+            $formData = $data['appointment_type_form'] ?? [];
 
             if (
-                !$formData['appointment_time'] ||
-                !$formData['appointment_date'] ||
-                !$formData['barbershop'] ||
-                !$formData['id_service'] ||
-                !$formData['id_barber']
+                empty($formData['appointment_time']) ||
+                empty($formData['appointment_date']) ||
+                empty($formData['barbershop']) ||
+                empty($formData['id_service']) ||
+                empty($formData['id_barber'])
             ) {
                 $this->addFlash('danger', 'Campos vazios.');
                 return $this->redirect($request->headers->get('referer'));
             }
 
-            $barber = $em->getRepository(User::class)->find($formData['id_barber']);
-            $service = $em->getRepository(Service::class)->find($formData['id_service']);
-
+            $barber = $this->em->getRepository(User::class)->find($formData['id_barber']);
+            $service = $this->em->getRepository(Service::class)->find($formData['id_service']);
             $client = $this->getUser();
 
             if (!$barber || !$service || !$client instanceof User) {
@@ -57,8 +62,8 @@ final class AppointmentController extends AbstractController
             $appointment->setAppointmentTime(DateTime::createFromFormat('H:i', $formData['appointment_time']));
             $appointment->setStatus('Agendado');
 
-            $em->persist($appointment);
-            $em->flush();
+            $this->em->persist($appointment);
+            $this->em->flush();
 
             $this->addFlash('success', 'Agendamento realizado com sucesso!');
             return $this->redirect($request->headers->get('referer'));
@@ -70,11 +75,11 @@ final class AppointmentController extends AbstractController
     }
 
     #[Route('/list', name: 'list', methods: ['GET'])]
-    public function my_appointments(EntityManagerInterface $em): Response
+    public function my_appointments(): Response
     {
         $user = $this->getUser();
 
-        $qb = $em->createQueryBuilder();
+        $qb = $this->em->createQueryBuilder();
         $qb->select('a')
             ->from(Appointment::class, 'a')
             ->where('a.id_client = :client')
@@ -92,7 +97,7 @@ final class AppointmentController extends AbstractController
             $barber = $appointment->getIdBarber();
 
             if ($barber) {
-                $barberBarbershops = $em->getRepository(BarberBarbershop::class)
+                $barberBarbershops = $this->em->getRepository(BarberBarbershop::class)
                     ->findBy(['id_barber' => $barber]);
 
                 foreach ($barberBarbershops as $barberBarbershop) {
