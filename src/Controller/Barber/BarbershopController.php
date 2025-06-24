@@ -22,42 +22,75 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/barber/barbershop', name: 'barber_barbershop_')]
 final class BarbershopController extends AbstractController
 {
-    #[Route('', name: 'index', methods: ['GET'])]
-    public function index(BarberBarbershopRepository $barberBarbershopRepository): Response
+    private BarberBarbershopRepository $barberBarbershopRepository;
+    private BarbershopRepository $barbershopRepository;
+    private JoinRequestRepository $joinRequestRepository;
+    private ServiceRepository $serviceRepository;
+    private EntityManagerInterface $entityManager;
+
+    public function __construct(
+        BarberBarbershopRepository $barberBarbershopRepository,
+        BarbershopRepository $barbershopRepository,
+        JoinRequestRepository $joinRequestRepository,
+        ServiceRepository $serviceRepository,
+        EntityManagerInterface $entityManager
+    ) {
+        $this->barberBarbershopRepository = $barberBarbershopRepository;
+        $this->barbershopRepository = $barbershopRepository;
+        $this->joinRequestRepository = $joinRequestRepository;
+        $this->serviceRepository = $serviceRepository;
+        $this->entityManager = $entityManager;
+    }
+
+    private function getCurrentUser(): User
     {
-        $barberBarbershops = $barberBarbershopRepository->findBy(['id_barber' => $this->getUser()->getId()]);
-        $barbershop = !empty($barberBarbershops) ? $barberBarbershops[0]->getIdBarbershop() : null;
-        if($barbershop) {
+        /** @var User $user */
+        $user = $this->getUser();
+        return $user;
+    }
+
+    private function getBarbershopByCurrentUser(): ?Barbershop
+    {
+        $barberBarbershops = $this->barberBarbershopRepository->findBy(['id_barber' => $this->getCurrentUser()->getId()]);
+        return !empty($barberBarbershops) ? $barberBarbershops[0]->getIdBarbershop() : null;
+    }
+
+    #[Route('', name: 'index', methods: ['GET'])]
+    public function index(): Response
+    {
+        $barbershop = $this->getBarbershopByCurrentUser();
+        $owner = null;
+
+        if ($barbershop) {
             $owner = $barbershop->getCreatedBy();
-            if ($owner->getId() !== $this->getUser()->getId()) {
+            if ($owner->getId() !== $this->getCurrentUser()->getId()) {
                 $owner = null;
             }
         }
 
         return $this->render('barber/barbershop/dashboard.html.twig', [
             'barbershop' => $barbershop,
-            'owner' => $owner ?? null,
+            'owner' => $owner,
         ]);
     }
+
     #[Route('/view/{id}', name: 'view', methods: ['GET', 'POST'])]
-    public function view(Barbershop $barbershop, BarberBarbershopRepository $barberBarbershopRepository, Request $request): Response
+    public function view(Barbershop $barbershop, Request $request): Response
     {
-        $barberBarbershop = $barberBarbershopRepository->findBy([
-            'id_barbershop' => $barbershop->getId()
-        ]);
+        $relations = $this->barberBarbershopRepository->findBy(['id_barbershop' => $barbershop->getId()]);
 
         $barbers = [];
         $seenIds = [];
 
-        foreach ($barberBarbershop as $relation) {
+        foreach ($relations as $relation) {
             $barber = $relation->getIdBarber();
-            if (!in_array($barber->getId(), $seenIds)) {
+            if (!in_array($barber->getId(), $seenIds, true)) {
                 $seenIds[] = $barber->getId();
                 $barbers[] = $barber;
             }
         }
 
-        $currentUser = $this->getUser();
+        $currentUser = $this->getCurrentUser();
         $isParticipant = false;
         foreach ($barbers as $barber) {
             if ($barber->getId() === $currentUser->getId()) {
@@ -73,40 +106,43 @@ final class BarbershopController extends AbstractController
         }
 
         $owner = $barbershop->getCreatedBy();
-        $isowner = $owner->getId() === $currentUser->getId();
+        $isOwner = $owner->getId() === $currentUser->getId();
 
         return $this->render('barber/barbershop/view.html.twig', [
             'barbershop' => $barbershop,
             'barbers' => $barbers,
             'owner' => $owner,
-            'isowner' => $isowner,
+            'isowner' => $isOwner,
         ]);
     }
 
     #[Route('/edit', name: 'edit', methods: ['GET', 'POST'])]
-    public function manage(BarbershopRepository $barbershopRepository, Request $request, EntityManagerInterface $em, JoinRequestRepository $joinRequestRepository): Response
+    public function manage(Request $request): Response
     {
-        $barbershop = $barbershopRepository->findOneBy(['created_by' => $this->getUser()->getId()]);
-        $joinRequests = $joinRequestRepository->findBy([
+        $barbershop = $this->barbershopRepository->findOneBy(['created_by' => $this->getCurrentUser()->getId()]);
+        $joinRequests = $this->joinRequestRepository->findBy([
             'barbershop' => $barbershop,
             'status' => 'pending',
         ]);
+
         $form = $this->createForm(BarbershopTypeForm::class, $barbershop);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em->flush();
+            $this->entityManager->flush();
             $this->addFlash('success', 'Barbearia atualizada com sucesso!');
             return $this->redirect($request->headers->get('referer'));
         }
+
         return $this->render('barber/barbershop/edit.html.twig', [
             'form' => $form,
             'barbershop' => $barbershop,
             'join_requests' => $joinRequests,
         ]);
     }
+
     #[Route('/create', name: 'create', methods: ['GET', 'POST'])]
-    public function create(Request $request, EntityManagerInterface $entityManager): Response
+    public function create(Request $request): Response
     {
         $barbershop = new Barbershop();
 
@@ -114,64 +150,62 @@ final class BarbershopController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var User $user */
-            $user = $this->getUser();
+            $user = $this->getCurrentUser();
 
             $barbershop->setCreatedBy($user);
             $barbershop->setCreatedAt(new \DateTimeImmutable());
             $barbershop->setActive(true);
 
-            $entityManager->persist($barbershop);
+            $this->entityManager->persist($barbershop);
 
             $barberBarbershop = new BarberBarbershop();
             $barberBarbershop->setIdBarber($user);
             $barberBarbershop->setIdBarbershop($barbershop);
 
-            $entityManager->persist($barberBarbershop);
+            $this->entityManager->persist($barberBarbershop);
 
-            $entityManager->flush();
+            $this->entityManager->flush();
 
             $this->addFlash('success', 'Barbearia criada com sucesso!');
 
-            return $this->redirectToRoute('barber_barbershop_view', ['id' => $barbershop->getId()] );
+            return $this->redirectToRoute('barber_barbershop_view', ['id' => $barbershop->getId()]);
         }
 
         return $this->render('barber/barbershop/create.html.twig', [
             'form' => $form->createView(),
         ]);
     }
+
     #[Route('/join', name: 'join', methods: ['GET', 'POST'])]
-    public function join(BarbershopRepository $barbershopRepository, BarberBarbershopRepository $barberBarbershopRepository): Response
+    public function join(): Response
     {
-        $user = $this->getUser();
-        $barberBarbershops = $barberBarbershopRepository->findBy(['id_barber' => $user->getId()]);
+        $user = $this->getCurrentUser();
+        $barberBarbershops = $this->barberBarbershopRepository->findBy(['id_barber' => $user->getId()]);
+
         if (!empty($barberBarbershops)) {
             return $this->redirectToRoute('barber_barbershop_index');
         }
-        $barbershops = $barbershopRepository->findAll();
+
+        $barbershops = $this->barbershopRepository->findAll();
+
         return $this->render('barber/barbershop/join.html.twig', [
             'barbershops' => $barbershops,
         ]);
     }
+
     #[Route('/join/{id}', name: 'join_by_id', methods: ['POST'])]
-    public function join_by_id(
-        int $id,
-        BarbershopRepository $barbershopRepository,
-        EntityManagerInterface $em
-        , Request $request
-    ): Response {
-        $barbershop = $barbershopRepository->find($id);
+    public function join_by_id(int $id, Request $request): Response
+    {
+        $barbershop = $this->barbershopRepository->find($id);
 
         if (!$barbershop) {
             $this->addFlash('danger', 'Barbearia não encontrada.');
-            return $this->redirectToRoute('join');
+            return $this->redirectToRoute('barber_barbershop_join');
         }
 
-        /** @var User $user */
-        $user = $this->getUser();
+        $user = $this->getCurrentUser();
 
-        // Verifica se já existe pedido pendente
-        $existing = $em->getRepository(JoinRequest::class)->findOneBy([
+        $existing = $this->entityManager->getRepository(JoinRequest::class)->findOneBy([
             'user' => $user,
             'barbershop' => $barbershop,
             'status' => 'pending',
@@ -182,22 +216,22 @@ final class BarbershopController extends AbstractController
             return $this->redirect($request->headers->get('referer'));
         }
 
-        $joinrequest = new JoinRequest();
-        $joinrequest->setUser($user);
-        $joinrequest->setBarbershop($barbershop);
-        $em->persist($joinrequest);
-        $em->flush();
+        $joinRequest = new JoinRequest();
+        $joinRequest->setUser($user);
+        $joinRequest->setBarbershop($barbershop);
+
+        $this->entityManager->persist($joinRequest);
+        $this->entityManager->flush();
 
         $this->addFlash('success', 'Pedido enviado com sucesso! Aguarde a aprovação.');
+
         return $this->redirect($request->headers->get('referer'));
     }
+
     #[Route('/join/rejected/{id}', name: 'join_by_id_rejected', methods: ['POST'])]
-    public function join_by_id_rejected(
-        int $id,
-        EntityManagerInterface $em,
-        Request $request
-    ): Response {
-        $joinRequest = $em->getRepository(JoinRequest::class)->find($id);
+    public function join_by_id_rejected(int $id, Request $request): Response
+    {
+        $joinRequest = $this->entityManager->getRepository(JoinRequest::class)->find($id);
 
         if (!$joinRequest) {
             $this->addFlash('danger', 'Pedido não encontrado.');
@@ -205,8 +239,8 @@ final class BarbershopController extends AbstractController
         }
 
         $joinRequest->setStatus('rejected');
-        $em->persist($joinRequest);
-        $em->flush();
+        $this->entityManager->persist($joinRequest);
+        $this->entityManager->flush();
 
         $this->addFlash('success', 'Pedido rejeitado com sucesso.');
 
@@ -214,12 +248,9 @@ final class BarbershopController extends AbstractController
     }
 
     #[Route('/join/approved/{id}', name: 'join_by_id_approved', methods: ['POST'])]
-    public function join_by_id_approved(
-        int $id,
-        EntityManagerInterface $em,
-        Request $request,
-    ): Response {
-        $joinRequest = $em->getRepository(JoinRequest::class)->find($id);
+    public function join_by_id_approved(int $id, Request $request): Response
+    {
+        $joinRequest = $this->entityManager->getRepository(JoinRequest::class)->find($id);
 
         if (!$joinRequest) {
             $this->addFlash('danger', 'Pedido não encontrado.');
@@ -233,35 +264,44 @@ final class BarbershopController extends AbstractController
         $barberBarbershop->setIdBarber($barber);
         $barberBarbershop->setIdBarbershop($barbershop);
 
-        $em->persist($barberBarbershop);
-        $em->flush();
-
+        $this->entityManager->persist($barberBarbershop);
 
         $joinRequest->setStatus('approved');
-        $em->persist($joinRequest);
-        $em->flush();
+        $this->entityManager->persist($joinRequest);
+
+        $this->entityManager->flush();
 
         $this->addFlash('success', 'Pedido aceito com sucesso.');
 
         return $this->redirect($request->headers->get('referer') ?? $this->generateUrl('barber_barbershop_join_by_id'));
     }
+
     #[Route('/services', name: 'services_index', methods: ['GET'])]
-    public function services_index(ServiceRepository $serviceRepository, BarberBarbershopRepository $barberBarbershopRepository): Response
+    public function services_index(): Response
     {
-        $barbershop = $barberBarbershopRepository->findBy(['id_barber' => $this->getUser()->getId()])[0]->getIdBarbershop();
-        $services = $serviceRepository->findBy(['id_barbershop' => $barbershop, 'active' => true]);
+        $barbershop = $this->getBarbershopByCurrentUser();
+        if (!$barbershop) {
+            $this->addFlash('danger', 'Barbearia não encontrada para o usuário atual.');
+            return $this->redirectToRoute('barber_barbershop_services_index');
+        }
+
+        $services = $this->serviceRepository->findBy(['id_barbershop' => $barbershop, 'active' => true]);
+
         return $this->render('barber/barbershop/services/index.html.twig', [
             'services' => $services,
-            'barbershop' => $barbershop
+            'barbershop' => $barbershop,
         ]);
     }
+
     #[Route('/services/new', name: 'services_new', methods: ['GET', 'POST'])]
-    public function services_new(
-        Request $request,
-        EntityManagerInterface $em,
-        BarberBarbershopRepository $barberBarbershopRepository
-    ): Response {
-        $barbershop = $barberBarbershopRepository->findBy(['id_barber' => $this->getUser()->getId()])[0]->getIdBarbershop();
+    public function services_new(Request $request): Response
+    {
+        $barbershop = $this->getBarbershopByCurrentUser();
+        if (!$barbershop) {
+            $this->addFlash('danger', 'Barbearia não encontrada para o usuário atual.');
+            return $this->redirectToRoute('barber_barbershop_services_index');
+        }
+
         $service = new Service();
         $service->setIdBarbershop($barbershop);
         $service->setCreatedAt(new \DateTimeImmutable());
@@ -270,8 +310,8 @@ final class BarbershopController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em->persist($service);
-            $em->flush();
+            $this->entityManager->persist($service);
+            $this->entityManager->flush();
 
             $this->addFlash('success', 'Serviço criado com sucesso!');
 
@@ -283,66 +323,64 @@ final class BarbershopController extends AbstractController
             'barbershop' => $barbershop,
         ]);
     }
-    #[Route('/services/edit/{id}', name: 'services_edit', methods: ['GET', 'POST'])]
-    public function services_edit(
-        Request $request,
-        EntityManagerInterface $entityManager,
-        BarbershopRepository $barbershopRepository,
-        BarberBarbershopRepository $barberBarbershopRepository,
-        ServiceRepository $serviceRepository,
-        int $id
-    ): Response {
-        $barbershop = $barberBarbershopRepository->findBy(['id_barber' => $this->getUser()->getId()])[0]->getIdBarbershop();
-        $service = $serviceRepository->find($id);
 
-        if ($service->getIdBarbershop()->getId() !== $barbershop->getId()) {
-            throw $this->createNotFoundException('Serviço não encontrado para esta barbearia.');
+    #[Route('/services/edit/{id}', name: 'services_edit', methods: ['GET', 'POST'])]
+    public function services_edit(Request $request, int $id): Response
+    {
+        $barbershop = $this->getBarbershopByCurrentUser();
+        if (!$barbershop) {
+            $this->addFlash('danger', 'Barbearia não encontrada para o usuário atual.');
+            return $this->redirectToRoute('barber_barbershop_services_index');
+        }
+
+        $service = $this->serviceRepository->find($id);
+
+        if (!$service || $service->getIdBarbershop()->getId() !== $barbershop->getId()) {
+            $this->addFlash('danger', 'Serviço não encontrado para esta barbearia.');
+            return $this->redirectToRoute('barber_barbershop_services_index');
         }
 
         $form = $this->createForm(ServiceTypeForm::class, $service);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            $this->entityManager->flush();
 
             $this->addFlash('success', 'Serviço atualizado com sucesso!');
+
             return $this->redirectToRoute('barber_barbershop_services_index');
         }
 
         return $this->render('barber/barbershop/services/edit.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
             'barbershop' => $barbershop,
             'service' => $service,
         ]);
     }
-    #[Route('/services/{id}/delete', name: 'services_delete', methods: ['POST'])]
-    public function services_delete(
-        Request $request,
-        EntityManagerInterface $entityManager,
-        BarbershopRepository $barbershopRepository,
-        BarberBarbershopRepository $barberBarbershopRepository,
-        ServiceRepository $serviceRepository,
-        int $id
-    ): Response {
-        $barbershop = $barberBarbershopRepository->findBy(['id_barber' => $this->getUser()->getId()])[0]->getIdBarbershop();
-        $service = $serviceRepository->find($id);
 
-        if (!$barbershop || !$service) {
-            throw $this->createNotFoundException('Barbearia ou serviço não encontrado.');
+    #[Route('/services/delete/{id}', name: 'services_delete', methods: ['GET', 'POST'])]
+    public function services_delete(Request $request, int $id): Response
+    {
+        $barbershop = $this->getBarbershopByCurrentUser();
+        if (!$barbershop) {
+            $this->addFlash('danger', 'Barbearia não encontrada para o usuário atual.');
+            return $this->redirectToRoute('barber_barbershop_services_index');
         }
 
-        if ($service->getIdBarbershop()->getId() !== $barbershop->getId()) {
-            throw $this->createAccessDeniedException('Este serviço não pertence à barbearia informada.');
+        $service = $this->serviceRepository->find($id);
+
+        if (!$service || $service->getIdBarbershop()->getId() !== $barbershop->getId()) {
+            $this->addFlash('danger', 'Serviço não encontrado para esta barbearia.');
+            return $this->redirectToRoute('barber_barbershop_services_index');
         }
 
-        if ($this->isCsrfTokenValid('delete_service_' . $service->getId(), $request->request->get('_token'))) {
-            $service->setActive(false);
-            $entityManager->persist($service);
-            $entityManager->flush();
-
+        if ($this->isCsrfTokenValid('delete_service_'.$service->getId(), $request->request->get('_token'))) {
+            $this->entityManager->remove($service);
+            $this->entityManager->flush();
             $this->addFlash('success', 'Serviço removido com sucesso!');
-        } else {
-            $this->addFlash('danger', 'Token CSRF inválido. Ação cancelada.');
+        }
+        else {
+            $this->addFlash('danger', 'Token inválido.');
         }
 
         return $this->redirectToRoute('barber_barbershop_services_index');

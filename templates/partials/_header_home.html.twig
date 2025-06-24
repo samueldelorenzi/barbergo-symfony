@@ -1,13 +1,12 @@
-
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow p-4  border-bottom border-white border-opacity-25 sticky-top top-0 stick-top top ">
     <div class="container">
-       
+
         <a class="navbar-brand d-flex align-items-center" href="{{ path('home') }}">
             <img src="{{ asset('images/favicon.ico') }}" alt="Logo BarberGO" width="40" height="40" class="me-2">
             <span class="fs-4 fw-bold">BarberGO</span>
         </a>
 
-      
+
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -17,7 +16,7 @@
             <!-- Centraliza os links -->
             <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                   <a href="{{ path('home') }}" class="nav-link px-3 {% if 'home' in app.request.attributes.get('_route') %}active border-bottom border-4 border-white{% endif %}">
+                    <a href="{{ path('home') }}" class="nav-link px-3 {% if 'home' in app.request.attributes.get('_route') %}active border-bottom border-4 border-white{% endif %}">
                         <i class="bi bi-house me-1"></i>
                         <span class="d-lg-inline">Início</span>
                     </a>
@@ -28,13 +27,14 @@
                         <span class="d-lg-inline">Cadastro</span>
                     </a>
                 </li>
-                 <li class="nav-item">
-                  <a href="#" class="nav-link px-3 ">
+                <li class="nav-item">
+                    <a href="{{ path('about') }}" class="nav-link px-3 ">
+                        <i class="bi bi-info-circle me-1"></i>
                         <span class="d-lg-inline">Sobre</span>
                     </a>
                 </li>
-            
-               
+
+
             </ul>
 
             <!-- Login / Perfil -->
@@ -46,7 +46,9 @@
                     <ul class="dropdown-menu dropdown-menu-end text-small">
                         <li><a class="dropdown-item" href="#">Configurações</a></li>
                         <li><a class="dropdown-item" href="#">Perfil</a></li>
-                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
                         <li><a class="dropdown-item" href="{{ path('app_logout') }}">Sair</a></li>
                     </ul>
                 </div>

@@ -13,11 +13,8 @@ final class LoginController extends AbstractController
     #[Route('', name: '', methods: ['GET', 'POST'])]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        $error = $authenticationUtils->getLastAuthenticationError();
-        $lastUsername = $authenticationUtils->getLastUsername();
-
         return $this->render('auth/login.html.twig', [
-            'error' => $error,
+            'error' => $authenticationUtils->getLastAuthenticationError(),
         ]);
     }
 }

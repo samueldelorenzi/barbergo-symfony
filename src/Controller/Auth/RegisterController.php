@@ -22,22 +22,22 @@ final class RegisterController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $plainPassword = $form->get('plainPassword')->getData();
-            $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
-            $user->setPassword($hashedPassword);
+            $user->setPassword(
+                $passwordHasher->hashPassword($user, $form->get('plainPassword')->getData())
+            );
+
             $user->setCreatedAt(new \DateTimeImmutable());
             $user->setUpdatedAt(new \DateTimeImmutable());
-
-            $isBarber = $form->get('isBarber')->getData();
-            $user->setRole($isBarber ? 'barber' : 'client');
-
+            $user->setRole($form->get('isBarber')->getData() ? 'barber' : 'client');
             $user->setActive(true);
+
             $emi->persist($user);
             $emi->flush();
 
             $this->addFlash('success', 'Cadastro realizado com sucesso!');
             return $this->redirect($request->headers->get('referer'));
         }
+
         return $this->render('auth/registration.html.twig', [
             'form' => $form,
         ]);

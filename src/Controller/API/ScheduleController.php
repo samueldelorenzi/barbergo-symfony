@@ -1,5 +1,4 @@
 <?php
-// src/Controller/HelperController.php
 
 namespace App\Controller\API;
 
@@ -53,7 +52,7 @@ class ScheduleController extends AbstractController
 
         $latestSchedulePerDay = [];
         foreach ($schedules as $schedule) {
-            $weekDay = (int)$schedule->getWeekDay();
+            $weekDay = (int) $schedule->getWeekDay();
             if (!isset($latestSchedulePerDay[$weekDay]) || $schedule->getId() > $latestSchedulePerDay[$weekDay]->getId()) {
                 $latestSchedulePerDay[$weekDay] = $schedule;
             }
@@ -73,7 +72,7 @@ class ScheduleController extends AbstractController
 
         while (count($dates) < 7) {
             $date = $today->modify("+$i days");
-            $dayOfWeek = (int)$date->format('w');
+            $dayOfWeek = (int) $date->format('w');
 
             if (!empty($activeDays[$dayOfWeek])) {
                 $dates[] = [
@@ -88,8 +87,6 @@ class ScheduleController extends AbstractController
         return new JsonResponse($dates);
     }
 
-
-
     #[Route('/available_times/{barberId}', name: 'available_times', methods: ['GET'])]
     public function getAvailableTimes(int $barberId, Request $request): JsonResponse
     {
@@ -97,7 +94,7 @@ class ScheduleController extends AbstractController
         $serviceId = $request->query->get('serviceId');
 
         if (!$date || !$serviceId) {
-            return new JsonResponse(['error' => 'Missing required parameters'], 400);
+            return new JsonResponse(['error' => 'Missing required parameters: date and serviceId'], 400);
         }
 
         $barber = $this->usersRepository->find($barberId);
@@ -108,7 +105,7 @@ class ScheduleController extends AbstractController
         }
 
         $serviceDuration = $service->getDurationMinutes();
-        $weekday = (int)(new \DateTime($date))->format('w');
+        $weekday = (int) (new \DateTime($date))->format('w');
 
         $schedule = $this->scheduleRepository->createQueryBuilder('s')
             ->where('s.id_barber = :barber')
@@ -118,8 +115,7 @@ class ScheduleController extends AbstractController
             ->orderBy('s.id', 'DESC')
             ->setMaxResults(1)
             ->getQuery()
-            ->getResult();
-        $schedule = $schedule[0];
+            ->getOneOrNullResult();
 
         if (!$schedule || !$schedule->isActive()) {
             return new JsonResponse([]); // sem agenda ou inativo
@@ -128,9 +124,9 @@ class ScheduleController extends AbstractController
         $start = new \DateTime($date . ' ' . $schedule->getStartTime()->format('H:i:s'));
         $end = new \DateTime($date . ' ' . $schedule->getEndTime()->format('H:i:s'));
 
-
         $lunchStart = new \DateTime($date . ' 12:00:00');
         $lunchEnd = new \DateTime($date . ' 13:30:00');
+
         $appointments = $this->appointmentsRepository->createQueryBuilder('a')
             ->where('a.id_barber = :barber')
             ->andWhere('a.appointment_date = :date')
@@ -149,7 +145,9 @@ class ScheduleController extends AbstractController
             $slot = $start->format('H:i');
             $slotEnd = (clone $start)->modify("+{$serviceDuration} minutes");
 
-            if ($slotEnd > $end) break;
+            if ($slotEnd > $end) {
+                break;
+            }
 
             if ($start >= $lunchStart && $start < $lunchEnd) {
                 $start->modify('+30 minutes');
