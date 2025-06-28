@@ -1,49 +1,66 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm py-3">
     <div class="container">
+        <!-- LOGO + TOGGLER -->
         <a class="navbar-brand d-flex align-items-center" href="{{ path('home') }}">
             <img src="{{ asset('images/favicon.ico') }}" alt="Logo BarberGO" width="40" height="40" class="me-2 rounded">
             <span class="fs-4 fw-bold">BarberGO</span>
         </a>
 
+        <!-- Botão toggler para mobile -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#client-nav" aria-controls="client-nav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse" id="client-nav">
-            <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
-                <li class="nav-item">
-                    <a href="{{ path('client_dashboard') }}" class="nav-link px-3 {% if app.request.attributes.get('_route') == 'client_dashboard' %}active border-bottom border-4 border-white{% endif %}">
-                        <i class="bi bi-house-door me-1"></i> Minha Área
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ path('client_appointment_new') }}" class="nav-link px-3 {% if 'appointment_new' in app.request.attributes.get('_route') %}active border-bottom border-4 border-white{% endif %}">
-                        <i class="bi bi-calendar-check me-1"></i> Novo horário
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ path('client_appointment_list') }}" class="nav-link px-3 {% if 'appointment_list' in app.request.attributes.get('_route') %}active border-bottom border-4 border-white{% endif %}">
-                        <i class="bi bi-clock me-1"></i> Meus agendamentos
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ path('user_profile_view') }}" class="nav-link px-3 {% if 'profile' in app.request.attributes.get('_route') %}active border-bottom border-4 border-white{% endif %}">
-                        <i class="bi bi-person-circle me-1"></i> Perfil
-                    </a>
-                </li>
-            </ul>
+        <!-- CONTEÚDO COLAPSÁVEL -->
+        <div class="collapse navbar-collapse w-100" id="client-nav">
+            <div class="d-flex justify-content-between align-items-center w-100 flex-wrap">
+                <!-- CENTRO: LINKS DE NAVEGAÇÃO -->
+                <ul class="navbar-nav mx-md-auto mb-2 mb-lg-0 gap-lg-4 text-center">
+                    <li class="nav-item">
+                        <a href="{{ path('client_dashboard') }}" class="nav-link text-white {% if app.request.attributes.get('_route') == 'client_dashboard' %}border-bottom border-4 border-white{% endif %}">
+                            <i class="bi bi-house-door me-1"></i> Minha Área
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ path('client_appointment_new') }}" class="nav-link text-white {% if 'appointment_new' in app.request.attributes.get('_route') %}border-bottom border-4 border-white{% endif %}">
+                            <i class="bi bi-calendar-check me-1"></i> Novo horário
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ path('client_appointment_list') }}" class="nav-link text-white {% if 'appointment_list' in app.request.attributes.get('_route') %}border-bottom border-4 border-white{% endif %}">
+                            <i class="bi bi-clock me-1"></i> Meus agendamentos
+                        </a>
+                    </li>
+                </ul>
 
-            <ul class="navbar-nav ms-lg-4 mt-3 mt-lg-0 align-items-lg-center">
-                <li class="nav-item text-white small me-3 d-flex align-items-center">
-                    <i class="bi bi-envelope-fill me-2"></i>
-                    {{ app.user.email }}
-                </li>
-                <li class="nav-item">
-                    <a href="/logout" class="nav-link px-3 text-danger fw-semibold">
+                <!-- DIREITA: DROPDOWN - APARECE SÓ EM TELAS GRANDES -->
+                <div class="dropdown d-none d-lg-block">
+                    <a class="nav-link dropdown-toggle text-white d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person-circle me-2"></i>
+                        {{ app.user.email }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                        <li>
+                            <a class="dropdown-item {% if 'profile' in app.request.attributes.get('_route') %}active fw-bold{% endif %}" href="{{ path('user_profile_view') }}">
+                                <i class="bi bi-person-lines-fill me-1"></i> Perfil
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item text-danger fw-semibold" href="/logout">
+                                <i class="bi bi-box-arrow-left me-1"></i> Sair
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- MOBILE: SOMENTE O BOTÃO "SAIR" -->
+                <div class="d-block d-lg-none text-center w-100 mt-3">
+                    <a class="btn btn-outline-danger fw-semibold px-4" href="/logout">
                         <i class="bi bi-box-arrow-left me-1"></i> Sair
                     </a>
-                </li>
-            </ul>
+                </div>
+            </div>
         </div>
     </div>
 </nav>

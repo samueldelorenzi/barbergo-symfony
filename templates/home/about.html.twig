@@ -1,0 +1,103 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}BarberGO | Home{% endblock %}
+
+{% block stylesheets %}
+    {# Se tiver estilos personalizados, pode adicionar aqui #}
+{% endblock %}
+
+{% block body %}
+    <div class="container col-10 col-lg-12 border my-4 shadow rounded p-3">
+        <div class="text-center mt-3">
+            <h1>BarberGO - A<span style="background: linear-gradient(120deg, black, #FFC107); -webkit-background-clip: text; color: transparent;">  Plataforma para Gestão de Barbearias</span></h1>
+            <p>O <strong>BarberGO</strong> é uma plataforma completa para gestão de barbearias, facilitando o agendamento de clientes, gerenciamento de barbeiros e o controle de serviços oferecidos.</p>
+        </div>
+
+        <section class="table table-responsive my-5">
+            <h2 class="text-center">Funcionalidades Principais</h2>
+            <table class="table table-striped mt-4">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Funcionalidade</th>
+                        <th>Descrição</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Agendamento Online</strong></td>
+                        <td>Permite que os clientes agendem seus horários com facilidade, com confirmação em tempo real e lembretes automáticos.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Gerenciamento de Barbeiros</strong></td>
+                        <td>Administra a agenda e os serviços de cada barbeiro, permitindo que os clientes escolham seu profissional preferido.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Relatórios e Estatísticas</strong></td>
+                        <td>Exibe relatórios visuais sobre o fluxo de clientes, serviços mais solicitados e feedbacks.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Feedback e Avaliações</strong></td>
+                        <td>Coleta avaliações dos clientes para melhorar a experiência e destacar os barbeiros mais bem avaliados.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="container my-5">
+            <h2 class="text-center">Equipe do Projeto</h2>
+            <div class="table-responsive">
+                <table class="table table-bordered mt-4">
+                    <thead class="table-secondary">
+                        <tr>
+                            <th>Membro</th>
+                            <th>Papel</th>
+                            <th>Descrição</th>
+                            <th>Imagem</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+    <tr>
+        <td><strong>Paulo Mário Valente Bumba</strong></td>
+        <td>Desenvolvedor Fullstack</td>
+        <td>Responsável pelo desenvolvimento front-end e integrações com o back-end. Criou interfaces modernas, responsivas e funcionais, além de colaborar na estrutura da aplicação.</td>
+        <td><img src="https://media.licdn.com/dms/image/v2/D4D03AQEJyh1DMaltoQ/profile-displayphoto-shrink_800_800/B4DZXfDSk0HYAc-/0/1743203937692?e=1756339200&v=beta&t=1bvd5V9FS3s5PZYeQhk80W9IO1tYGCMvkKfales97xM" class="img-fluid" alt="Foto de Paulo Bumba" style="width: 150px;"></td>
+    </tr>
+
+    <tr>
+        <td><strong>Samuel De Lorenzi Ribeiro</strong></td>
+        <td>Desenvolvedor Fullstack</td>
+        <td>Responsável pela estruturação do back-end, criação de controllers, models e rotas. Desenvolveu toda a base lógica do sistema e garantiu a integração eficiente com o front-end.</td>
+        <td><img src="https://media.licdn.com/dms/image/v2/D4D03AQEoMGgboaWSFw/profile-displayphoto-shrink_800_800/B4DZaDpA9pGsAc-/0/1745965289948?e=1756339200&v=beta&t=CS8mldz3CgXphRzsdU1H7mIwJqkPZCzbZiOaInmsiEs" class="img-fluid" alt="Foto de Samuel Ribeiro" style="width: 150px;"></td>
+    </tr>
+</tbody>
+
+                </table>
+            </div>
+        </section>
+
+        <section class="my-5">
+            <h2 class="text-center">Tecnologias Usadas</h2>
+            <div class="row">
+                {% set tecnologias = [
+                    { nome: 'HTML5', img: 'https://img.icons8.com/color/48/000000/html-5.png' },
+                    { nome: 'CSS3', img: 'https://img.icons8.com/color/48/000000/css3.png' },
+                    { nome: 'JavaScript', img: 'https://img.icons8.com/color/48/000000/javascript.png' },
+                    { nome: 'Bootstrap', img: 'https://img.icons8.com/color/48/000000/bootstrap.png' },
+                    { nome: 'PHP', img: 'https://img.icons8.com/color/48/000000/php.png' },
+                    { nome: 'MySQL', img: 'https://img.icons8.com/color/48/000000/mysql-logo.png' }
+                ] %}
+                
+                {% for tech in tecnologias %}
+                    <div class="col-md-4">
+                        <div class="card text-center mb-4">
+                            <div class="card-body">
+                                <img src="{{ tech.img }}" alt="{{ tech.nome }}" class="mb-3">
+                                <p>{{ tech.nome }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+{% endblock %}
