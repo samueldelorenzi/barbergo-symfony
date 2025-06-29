@@ -85,69 +85,26 @@
                 <div class="card-body">
                     <h4 class="mb-4"><i class="bi bi-bar-chart-line me-2"></i>Estatísticas Rápidas</h4>
                     <div class="row text-center">
-                        <div class="col-md-3 mb-3">
+                        <div class="col-md-4 mb-3">
                             <div class="stat-card p-3 bg-light rounded shadow-sm">
-                                <h4 class="text-primary">120</h4>
+                                <h4 class="text-primary">{{ appointmentsNumber }}</h4>
                                 <p class="text-muted small mb-0">Clientes Atendidos</p>
                             </div>
                         </div>
-                        <div class="col-md-3 mb-3">
+                        <div class="col-md-4 mb-3">
                             <div class="stat-card p-3 bg-light rounded shadow-sm">
-                                <h4 class="text-success">35</h4>
+                                <h4 class="text-success">{{ appointmentsLastMonth }}</h4>
                                 <p class="text-muted small mb-0">Agendamentos este mês</p>
                             </div>
                         </div>
-                        <div class="col-md-3 mb-3">
+                        <div class="col-md-4 mb-3">
                             <div class="stat-card p-3 bg-light rounded shadow-sm">
-                                <h4 class="text-warning">12</h4>
-                                <p class="text-muted small mb-0">Horários disponíveis</p>
-                            </div>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <div class="stat-card p-3 bg-light rounded shadow-sm">
-                                <h4 class="text-danger">R$ 4.560,00</h4>
+                                <h4 class="text-danger">R$ {{ estimatedRevenue }}</h4>
                                 <p class="text-muted small mb-0">Faturamento estimado</p>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Gráfico -->
-    <div class="row mb-5" data-aos="fade-up" data-aos-delay="300">
-        <div class="col-12">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h5 class="mb-4">Agendamentos nas últimas semanas</h5>
-                    <canvas id="agendamentosChart" height="120"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Depoimentos -->
-    <div class="row" data-aos="fade-up" data-aos-delay="400">
-        <div class="col-12 text-center mb-4">
-            <h3>O que dizem seus clientes</h3>
-        </div>
-        <div class="col-md-4">
-            <div class="testimonial-card">
-                <p>"Corte sempre impecável, e agendar ficou muito mais fácil com o sistema!"</p>
-                <div class="testimonial-author fw-bold">– Lucas Alves</div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="testimonial-card">
-                <p>"Recomendo demais! Atendimento rápido e interface muito boa."</p>
-                <div class="testimonial-author fw-bold">– Ana Costa</div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="testimonial-card">
-                <p>"Nunca mais perdi horário, o app é top e o barbeiro melhor ainda!"</p>
-                <div class="testimonial-author fw-bold">– Thiago Mendes</div>
             </div>
         </div>
     </div>

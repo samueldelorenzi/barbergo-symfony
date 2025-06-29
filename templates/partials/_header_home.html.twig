@@ -28,7 +28,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ path('about') }}" class="nav-link px-3 ">
+                    <a href="{{ path('about') }}" class="nav-link px-3 {% if 'about' in app.request.attributes.get('_route') %}active border-bottom border-4 border-white{% endif %}">
                         <i class="bi bi-info-circle me-1"></i>
                         <span class="d-lg-inline">Sobre</span>
                     </a>
