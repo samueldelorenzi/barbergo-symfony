@@ -1,44 +1,194 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Painel do Barbeiro{% endblock %}
+{% block title %}BarberGO | Painel do Barbeiro{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+    <style>
+        .dashboard-card {
+            transition: transform 0.3s ease;
+            border-radius: 1rem;
+        }
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+        }
+        .stat-card h4 {
+            font-weight: 700;
+        }
+        .testimonial-card {
+            background: #fff;
+            border-radius: 1rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+        .testimonial-card:hover {
+            transform: translateY(-8px);
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-    <div class="container py-5">
-        <h2 class="mb-4 text-center">Bem-vindo, {{ app.user.name }}!</h2>
+<main class="container py-5 container col-10 col-lg-12 border my-4 shadow rounded p-">
+    <div class="text-center mb-5" data-aos="fade-down">
+        <h2 class="fw-bold">Bem-vindo, {{ app.user.name }}!</h2>
+        <p class="text-muted">Gerencie sua barbearia, horários e agendamentos com facilidade.</p>
+    </div>
 
-        {% for label, messages in app.flashes %}
-            {% for message in messages %}
-                <div class="alert alert-{{ label }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert" data-aos="fade-down">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
         {% endfor %}
+    {% endfor %}
 
-        <div class="row g-4">
-            <div class="col-md-4">
-                <a href="{{ path('barber_barbershop_index') }}" class="text-decoration-none text-dark">
-                    <div class="card text-center shadow-sm p-4">
-                        <i class="bi bi-shop fs-1 mb-3 text-primary"></i>
-                        <h5>Barbearia</h5>
+    <!-- Opções principais -->
+    <div class="row g-4 mb-5" data-aos="fade-up" data-aos-delay="100">
+        <div class="col-md-4">
+            <a href="{{ path('barber_barbershop_index') }}" class="text-decoration-none text-dark">
+                <div class="card dashboard-card text-center p-4 shadow-sm">
+                    <i class="bi bi-shop fs-1 text-primary mb-3"></i>
+                    <h5 class="fw-semibold">Minha Barbearia</h5>
+                    <p class="text-muted small">Edite detalhes do seu estabelecimento</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="{{ path('barber_appointment_list') }}" class="text-decoration-none text-dark">
+                <div class="card dashboard-card text-center p-4 shadow-sm">
+                    <i class="bi bi-calendar-event fs-1 text-success mb-3"></i>
+                    <h5 class="fw-semibold">Agendamentos</h5>
+                    <p class="text-muted small">Veja seus agendamentos recentes</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="{{ path('barber_schedule_index') }}" class="text-decoration-none text-dark">
+                <div class="card dashboard-card text-center p-4 shadow-sm">
+                    <i class="bi bi-clock fs-1 text-secondary mb-3"></i>
+                    <h5 class="fw-semibold">Editar Horários</h5>
+                    <p class="text-muted small">Defina seus dias e horários de trabalho</p>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Estatísticas -->
+    <div class="row mb-5" data-aos="fade-up" data-aos-delay="200">
+        <div class="col-12">
+            <div class="card shadow-sm border-secondary">
+                <div class="card-body">
+                    <h4 class="mb-4"><i class="bi bi-bar-chart-line me-2"></i>Estatísticas Rápidas</h4>
+                    <div class="row text-center">
+                        <div class="col-md-3 mb-3">
+                            <div class="stat-card p-3 bg-light rounded shadow-sm">
+                                <h4 class="text-primary">120</h4>
+                                <p class="text-muted small mb-0">Clientes Atendidos</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="stat-card p-3 bg-light rounded shadow-sm">
+                                <h4 class="text-success">35</h4>
+                                <p class="text-muted small mb-0">Agendamentos este mês</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="stat-card p-3 bg-light rounded shadow-sm">
+                                <h4 class="text-warning">12</h4>
+                                <p class="text-muted small mb-0">Horários disponíveis</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="stat-card p-3 bg-light rounded shadow-sm">
+                                <h4 class="text-danger">R$ 4.560,00</h4>
+                                <p class="text-muted small mb-0">Faturamento estimado</p>
+                            </div>
+                        </div>
                     </div>
-                </a>
-            </div>
-            <div class="col-md-4">
-                <a href="{{ path('barber_appointment_list') }}" class="text-decoration-none text-dark">
-                    <div class="card text-center shadow-sm p-4">
-                        <i class="bi bi-calendar-event fs-1 mb-3 text-success"></i>
-                        <h5>Meus Agendamentos</h5>
-                    </div>
-                </a>
-            </div>
-            <div class="col-md-4">
-                <a href="{{ path('barber_schedule_index') }}" class="text-decoration-none text-dark">
-                    <div class="card text-center shadow-sm p-4">
-                        <i class="bi bi-clock fs-1 mb-3 text-secondary"></i>
-                        <h5>Editar horários</h5>
-                    </div>
-                </a>
+                </div>
             </div>
         </div>
     </div>
+
+    <!-- Gráfico -->
+    <div class="row mb-5" data-aos="fade-up" data-aos-delay="300">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="mb-4">Agendamentos nas últimas semanas</h5>
+                    <canvas id="agendamentosChart" height="120"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Depoimentos -->
+    <div class="row" data-aos="fade-up" data-aos-delay="400">
+        <div class="col-12 text-center mb-4">
+            <h3>O que dizem seus clientes</h3>
+        </div>
+        <div class="col-md-4">
+            <div class="testimonial-card">
+                <p>"Corte sempre impecável, e agendar ficou muito mais fácil com o sistema!"</p>
+                <div class="testimonial-author fw-bold">– Lucas Alves</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="testimonial-card">
+                <p>"Recomendo demais! Atendimento rápido e interface muito boa."</p>
+                <div class="testimonial-author fw-bold">– Ana Costa</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="testimonial-card">
+                <p>"Nunca mais perdi horário, o app é top e o barbeiro melhor ainda!"</p>
+                <div class="testimonial-author fw-bold">– Thiago Mendes</div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        AOS.init();
+
+        const ctx = document.getElementById('agendamentosChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['01/06', '08/06', '15/06', '22/06', '29/06'],
+                datasets: [{
+                    label: 'Agendamentos',
+                    data: [4, 6, 8, 5, 10],
+                    borderColor: '#198754',
+                    backgroundColor: 'rgba(25,135,84,0.2)',
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 6,
+                    pointHoverRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: true, position: 'top' }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { stepSize: 2 }
+                    }
+                }
+            }
+        });
+    </script>
 {% endblock %}

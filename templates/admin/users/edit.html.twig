@@ -1,29 +1,22 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}BarberGO | Editar:
-    {{ user.id }}
-{% endblock %}
+{% block title %}BarberGO | Editar: {{ user.id }}{% endblock %}
 
 {% block body %}
-
-    <div class="d-flex justify-content-center align-items-center w-100">
-        <div class="col-md-4">
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h1 class="text-center">Editar usuário</h1>
-
-                    {% for label, messages in app.flashes %}
-                        {% for message in messages %}
-                            <div class="alert alert-{{ label }}">
-                                {{ message }}
-                            </div>
-                        {% endfor %}
-                    {% endfor %}
-
-                    {{ include('admin/users/_form.html.twig', {'button_label': 'Atualizar'}) }}
-
-                </div>
-            </div>
+<div class="container my-5  container col-10 col-lg-12 border shadow rounded p-3">
+    <div class="  rounded-3 border-0">
+        <div class="  text-center">
+            <h1 class="h4 mb-0">Editar Usuário</h1>
+        </div>
+        <div class="card-body">
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ label }}">{{ message }}</div>
+                {% endfor %}
+            {% endfor %}
+            
+            {{ include('admin/users/_form.html.twig', {'button_label': 'Atualizar'}) }}
         </div>
     </div>
+</div>
 {% endblock %}
