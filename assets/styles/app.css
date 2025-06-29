@@ -5,5 +5,7 @@
   padding: 0;
   box-sizing: border-box;
   font-family: system-ui;
-  
+  a{
+    border-bottom: none;
+  }
 }

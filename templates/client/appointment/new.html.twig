@@ -3,89 +3,88 @@
 {% block title %}BarberGO | Agendamento{% endblock %}
 
 {% block body %}
-    <div class="d-flex justify-content-center align-items-center w-100 mx-auto my-5">
-        <div class="col-md-4">
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h2 class="text-center mb-4">Agende seu horário</h2>
+<div class="container col-12 col-lg-10 border my-5 shadow rounded p-4">
+  <h2 class="text-center mb-4 fw-bold">Agende seu horário</h2>
 
-                    {% for label, messages in app.flashes %}
-                        {% for message in messages %}
-                            <div class="alert alert-{{ label }}">
-                                {{ message }}
-                            </div>
-                        {% endfor %}
-                    {% endfor %}
+  {% for label, messages in app.flashes %}
+    {% for message in messages %}
+      <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  {% endfor %}
 
-                    {{ form_start(form) }}
+  {{ form_start(form) }}
 
-                    <div class="mb-3">
-                        {{ form_label(form.barbershop, 'Barbearia', {'label_attr': {'class': 'form-label'}}) }}
-                        {{ form_widget(form.barbershop, {
-                            'attr': {
-                                'class': 'form-select' ~ (form_errors(form.barbershop) ? ' is-invalid' : ''),
-                                'disabled': false
-                            }
-                        }) }}
-                        <div class="text text-danger small">{{ form_errors(form.barbershop)|striptags }}</div>
-                    </div>
-
-                    <div class="mb-3">
-                        {{ form_label(form.id_barber, 'Barbeiro', {'label_attr': {'class': 'form-label'}}) }}
-                        {{ form_widget(form.id_barber, {
-                            'attr': {
-                                'class': 'form-select' ~ (form_errors(form.id_barber) ? ' is-invalid' : ''),
-                                'disabled': true
-                            }
-                        }) }}
-                        <div class="text text-danger small">{{ form_errors(form.id_barber)|striptags }}</div>
-                    </div>
-
-                    <div class="mb-3">
-                        {{ form_label(form.id_service, 'Serviço', {'label_attr': {'class': 'form-label'}}) }}
-                        {{ form_widget(form.id_service, {
-                            'attr': {
-                                'class': 'form-select' ~ (form_errors(form.id_service) ? ' is-invalid' : ''),
-                                'disabled': true
-                            }
-                        }) }}
-                        <div class="text text-danger small">{{ form_errors(form.id_service)|striptags }}</div>
-                    </div>
-
-                    <div class="mb-3">
-                        {{ form_label(form.appointment_date, 'Data', {'label_attr': {'class': 'form-label'}}) }}
-                        {{ form_widget(form.appointment_date, {
-                            'attr': {
-                                'class': 'form-select' ~ (form_errors(form.appointment_date) ? ' is-invalid' : ''),
-                                'disabled': true
-                            }
-                        }) }}
-                        <div class="text text-danger small">{{ form_errors(form.appointment_date)|striptags }}</div>
-                    </div>
-
-                    <div class="mb-3">
-                        {{ form_label(form.appointment_time, 'Hora', {'label_attr': {'class': 'form-label'}}) }}
-                        {{ form_widget(form.appointment_time, {
-                            'attr': {
-                                'class': 'form-select' ~ (form_errors(form.appointment_time) ? ' is-invalid' : ''),
-                                'disabled': true
-                            }
-                        }) }}
-                        <div class="text text-danger small">{{ form_errors(form.appointment_time)|striptags }}</div>
-                    </div>
-
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-warning fw-bold" id="appointment_submit_btn" disabled>
-                            <i class="bi bi-calendar-check me-1"></i>
-                            Confirmar Agendamento
-                        </button>
-                    </div>
-
-                    {{ form_end(form) }}
-                </div>
-            </div>
-        </div>
+  <div class="row g-3">
+    <div class="col-md-6">
+      {{ form_label(form.barbershop, 'Barbearia', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+      {{ form_widget(form.barbershop, {
+        'attr': {
+          'class': 'form-select' ~ (form_errors(form.barbershop) ? ' is-invalid' : ''),
+          'disabled': false
+        }
+      }) }}
+      <div class="invalid-feedback d-block">{{ form_errors(form.barbershop)|striptags }}</div>
     </div>
+
+    <div class="col-md-6">
+      {{ form_label(form.id_barber, 'Barbeiro', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+      {{ form_widget(form.id_barber, {
+        'attr': {
+          'class': 'form-select' ~ (form_errors(form.id_barber) ? ' is-invalid' : ''),
+          'disabled': true
+        }
+      }) }}
+      <div class="invalid-feedback d-block">{{ form_errors(form.id_barber)|striptags }}</div>
+    </div>
+
+    <div class="col-md-6">
+      {{ form_label(form.id_service, 'Serviço', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+      {{ form_widget(form.id_service, {
+        'attr': {
+          'class': 'form-select' ~ (form_errors(form.id_service) ? ' is-invalid' : ''),
+          'disabled': true
+        }
+      }) }}
+      <div class="invalid-feedback d-block">{{ form_errors(form.id_service)|striptags }}</div>
+    </div>
+
+    <div class="col-md-6">
+      {{ form_label(form.appointment_date, 'Data', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+      {{ form_widget(form.appointment_date, {
+        'attr': {
+          'class': 'form-select' ~ (form_errors(form.appointment_date) ? ' is-invalid' : ''),
+          'disabled': true
+        }
+      }) }}
+      <div class="invalid-feedback d-block">{{ form_errors(form.appointment_date)|striptags }}</div>
+    </div>
+
+    <div class="col-md-12">
+      {{ form_label(form.appointment_time, 'Hora', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+      {{ form_widget(form.appointment_time, {
+        'attr': {
+          'class': 'form-select' ~ (form_errors(form.appointment_time) ? ' is-invalid' : ''),
+          'disabled': true
+        }
+      }) }}
+      <div class="invalid-feedback d-block">{{ form_errors(form.appointment_time)|striptags }}</div>
+    </div>
+  </div>
+
+  <div class="d-grid mt-4">
+    <button type="submit" class="btn btn-warning fw-bold" id="appointment_submit_btn" disabled>
+      <i class="bi bi-calendar-check me-1"></i> Confirmar Agendamento
+    </button>
+  </div>
+
+  {{ form_end(form) }}
+</div>
+
+</div>
+
 
     {% block javascripts %}
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

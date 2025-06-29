@@ -1,85 +1,108 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Barbearia{% endblock %}
+{% block title %}BarberGO | Painel da Barbearia{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+    <style>
+        .dashboard-card {
+            transition: transform 0.3s ease;
+            border-radius: 1rem;
+        }
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-    <div class="container py-5">
-        <div class="text-center mb-5">
-            <h2 class="fw-bold">Painel da Barbearia</h2>
-            <p class="text-muted">Gerencie ou participe de uma barbearia com facilidade.</p>
+<main class="container py-5 container col-10 col-lg-12 border my-4 shadow rounded p-3">
+    <div class="text-center mb-5" data-aos="fade-down">
+        <h2 class="fw-bold">Painel da Barbearia</h2>
+        <p class="text-muted">Gerencie ou participe de uma barbearia com facilidade.</p>
+    </div>
+
+    {% if owner is defined and owner %}
+        <div class="text-center mb-4" data-aos="fade-up" data-aos-delay="100">
+            <h4>Você é o proprietário da barbearia: <strong>{{ barbershop.name }}</strong></h4>
         </div>
 
-        {% if owner is defined and owner %}
-            <div class="text-center mb-4">
-                <h4>Você é o proprietário da barbearia: <strong>{{ barbershop.name }}</strong></h4>
+        <div class="row justify-content-center g-4" data-aos="fade-up" data-aos-delay="200">
+            <div class="col-md-4">
+                <a href="{{ path('barber_barbershop_edit') }}" class="text-decoration-none text-dark">
+                    <div class="card dashboard-card h-100 text-center shadow p-4">
+                        <i class="bi bi-gear-fill fs-1 mb-3 text-primary"></i>
+                        <h5 class="fw-semibold">Gerenciar Barbearia</h5>
+                    </div>
+                </a>
             </div>
+            <div class="col-md-4">
+                <a href="{{ path('barber_barbershop_view') }}" class="text-decoration-none text-dark">
+                    <div class="card dashboard-card h-100 text-center shadow p-4">
+                        <i class="bi bi-eye-fill fs-1 mb-3 text-success"></i>
+                        <h5 class="fw-semibold">Visualizar Informações</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="{{ path('barber_barbershop_services_index') }}" class="text-decoration-none text-dark">
+                    <div class="card dashboard-card h-100 text-center shadow p-4">
+                        <i class="bi bi-scissors fs-1 mb-3 text-danger"></i>
+                        <h5 class="fw-semibold">Cadastrar/Editar Serviços</h5>
+                    </div>
+                </a>
+            </div>
+        </div>
 
-            <div class="row justify-content-center g-4">
-                <div class="col-md-4">
-                    <a href="{{ path('barber_barbershop_edit') }}" class="text-decoration-none text-dark">
-                        <div class="card h-100 text-center shadow p-4">
-                            <i class="bi bi-gear-fill fs-1 mb-3 text-primary"></i>
-                            <h5 class="fw-semibold">Gerenciar Barbearia</h5>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-md-4">
-                    <a href="{{ path('barber_barbershop_view') }}" class="text-decoration-none text-dark">
-                        <div class="card h-100 text-center shadow p-4">
-                            <i class="bi bi-eye-fill fs-1 mb-3 text-success"></i>
-                            <h5 class="fw-semibold">Visualizar Informações</h5>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-md-4">
-                    <a href="{{ path('barber_barbershop_services_index') }}" class="text-decoration-none text-dark">
-                        <div class="card h-100 text-center shadow p-4">
-                            <i class="bi bi-scissors fs-1 mb-3 text-danger"></i>
-                            <h5 class="fw-semibold">Cadastrar/Editar serviços</h5>
-                        </div>
-                    </a>
-                </div>
-            </div>
+    {% elseif barbershop is defined and barbershop %}
+        <div class="text-center mb-4" data-aos="fade-up" data-aos-delay="100">
+            <h4>Você está vinculado à barbearia: <strong>{{ barbershop.name }}</strong></h4>
+        </div>
 
-        {% elseif barbershop is defined and barbershop %}
-            <div class="text-center mb-4">
-                <h4>Você está vinculado à barbearia: <strong>{{ barbershop.name }}</strong></h4>
+        <div class="row justify-content-center g-4" data-aos="fade-up" data-aos-delay="200">
+            <div class="col-md-4">
+                <a href="{{ path('barber_barbershop_view') }}" class="text-decoration-none text-dark">
+                    <div class="card dashboard-card h-100 text-center shadow p-4">
+                        <i class="bi bi-eye-fill fs-1 mb-3 text-success"></i>
+                        <h5 class="fw-semibold">Visualizar Informações</h5>
+                    </div>
+                </a>
             </div>
+        </div>
 
-            <div class="row justify-content-center g-4">
-                <div class="col-md-4">
-                    <a href="{{ path('barber_barbershop_view') }}" class="text-decoration-none text-dark">
-                        <div class="card h-100 text-center shadow p-4">
-                            <i class="bi bi-eye-fill fs-1 mb-3 text-success"></i>
-                            <h5 class="fw-semibold">Visualizar Informações</h5>
-                        </div>
-                    </a>
-                </div>
-            </div>
+    {% else %}
+        <div class="text-center mb-4" data-aos="fade-up" data-aos-delay="100">
+            <h4>Você ainda não está vinculado a nenhuma barbearia.</h4>
+        </div>
 
-        {% else %}
-            <div class="text-center mb-4">
-                <h4>Você ainda não está vinculado a nenhuma barbearia.</h4>
+        <div class="row justify-content-center g-4" data-aos="fade-up" data-aos-delay="200">
+            <div class="col-md-4">
+                <a href="{{ path('barber_barbershop_join') }}" class="text-decoration-none text-dark">
+                    <div class="card dashboard-card h-100 text-center shadow p-4">
+                        <i class="bi bi-door-open-fill fs-1 mb-3 text-success"></i>
+                        <h5 class="fw-semibold">Entrar em uma Barbearia</h5>
+                    </div>
+                </a>
             </div>
+            <div class="col-md-4">
+                <a href="{{ path('barber_barbershop_create') }}" class="text-decoration-none text-dark">
+                    <div class="card dashboard-card h-100 text-center shadow p-4">
+                        <i class="bi bi-plus-circle fs-1 mb-3 text-primary"></i>
+                        <h5 class="fw-semibold">Criar sua Barbearia</h5>
+                    </div>
+                </a>
+            </div>
+        </div>
+    {% endif %}
+</main>
+{% endblock %}
 
-            <div class="row justify-content-center g-4">
-                <div class="col-md-4">
-                    <a href="{{ path('barber_barbershop_join') }}" class="text-decoration-none text-dark">
-                        <div class="card h-100 text-center shadow p-4">
-                            <i class="bi bi-door-open-fill fs-1 mb-3 text-success"></i>
-                            <h5 class="fw-semibold">Entrar em uma Barbearia</h5>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-md-4">
-                    <a href="{{ path('barber_barbershop_create') }}" class="text-decoration-none text-dark">
-                        <div class="card h-100 text-center shadow p-4">
-                            <i class="bi bi-plus-circle fs-1 mb-3 text-primary"></i>
-                            <h5 class="fw-semibold">Criar sua Barbearia</h5>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        {% endif %}
-    </div>
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <script>
+        AOS.init();
+    </script>
 {% endblock %}

@@ -1,0 +1,173 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}BarberGO | Sobre{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        :root {
+            --primary-color: #FFC107;
+            --dark-color: #212529;
+            --light-gray: #f8f9fa;
+        }
+
+        .animated-gradient-text {
+            background: linear-gradient(120deg, var(--dark-color), var(--primary-color), var(--dark-color));
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            color: transparent;
+            animation: gradient-animation 4s ease infinite;
+        }
+
+        @keyframes gradient-animation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .custom-card {
+            background-color: #fff;
+            border: 1px solid #e9ecef;
+            border-radius: 0.75rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 100%;
+        }
+
+        .custom-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .team-img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 4px solid var(--primary-color);
+            margin-top: -60px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .card-body .role {
+            font-weight: bold;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+        }
+
+        .tech-icon {
+            height: 50px;
+            margin-bottom: 1rem;
+            transition: filter 0.3s ease, transform 0.3s ease;
+        }
+
+        .tech-card:hover .tech-icon {
+            filter: grayscale(0%);
+            transform: scale(1.1);
+        }
+
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container col-11 col-lg-10 my-5">
+        <div class="text-center mt-3 pt-4 fade-in-section">
+            <h1 class="animated-gradient-text fs-1 fw-bold">BarberGO</h1>
+            <p class="lead text-muted mt-3">
+                O <strong>BarberGO</strong> é uma plataforma completa para gestão de barbearias, facilitando o agendamento de clientes, gerenciamento de barbeiros e o controle de serviços oferecidos.
+            </p>
+        </div>
+
+        <section class="my-5 py-5 fade-in-section">
+            <div class="container">
+                <h2 class="text-center mb-5">Equipe do Projeto</h2>
+                <div class="row justify-content-center g-5">
+                    <div class="col-lg-5 col-md-8">
+                        <div class="card custom-card text-center border-0 shadow-sm" style="padding-top: 60px;">
+                            <img src="https://media.licdn.com/dms/image/v2/D4D03AQEJyh1DMaltoQ/profile-displayphoto-shrink_800_800/B4DZXfDSk0HYAc-/0/1743203937692?e=1756339200&v=beta&t=1bvd5V9FS3s5PZYeQhk80W9IO1tYGCMvkKfales97xM" class="team-img mx-auto" alt="Foto de Paulo Bumba">
+                            <div class="card-body mt-4">
+                                <h4 class="card-title">Paulo Mário Valente Bumba</h4>
+                                <p class="role">Desenvolvedor Fullstack</p>
+                                <p class="card-text text-muted">Responsável pelo front-end e integrações. Criou interfaces modernas e responsivas, colaborando na estrutura da aplicação.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-5 col-md-8">
+                        <div class="card custom-card text-center border-0 shadow-sm" style="padding-top: 60px;">
+                            <img src="https://media.licdn.com/dms/image/v2/D4D03AQEoMGgboaWSFw/profile-displayphoto-shrink_800_800/B4DZaDpA9pGsAc-/0/1745965289948?e=1756339200&v=beta&t=CS8mldz3CgXphRzsdU1H7mIwJqkPZCzbZiOaInmsiEs" class="team-img mx-auto" alt="Foto de Samuel Ribeiro">
+                            <div class="card-body mt-4">
+                                <h4 class="card-title">Samuel De Lorenzi Ribeiro</h4>
+                                <p class="role">Desenvolvedor Fullstack</p>
+                                <p class="card-text text-muted">Responsável pelo back-end, criação de controllers, models e rotas. Garantiu a lógica e a integração eficiente do sistema.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="my-5 py-5 fade-in-section">
+            <h2 class="text-center mb-5">Tecnologias Utilizadas</h2>
+            <div class="row g-4 justify-content-center text-center">
+                {% set tecnologias = [
+                    { nome: 'Symfony', img: 'https://cdn.worldvectorlogo.com/logos/symfony.svg' },
+                    { nome: 'PHP', img: 'https://icon.icepanel.io/Technology/svg/PHP.svg' },
+                    { nome: 'Twig', img: 'https://user-images.githubusercontent.com/973783/46407973-3c5dbf80-c72e-11e8-947c-d1fdaaa28f73.png' },
+                    { nome: 'Doctrine', img: 'https://icon.icepanel.io/Technology/svg/Doctrine.svg' },
+                    { nome: 'MySQL', img: 'https://icon.icepanel.io/Technology/svg/MySQL.svg' },
+                    { nome: 'Bootstrap', img: 'https://cdn.worldvectorlogo.com/logos/bootstrap-5-1.svg' },
+                    { nome: 'JavaScript', img: 'https://cdn.worldvectorlogo.com/logos/logo-javascript.svg' },
+                    { nome: 'HTML5', img: 'https://icon.icepanel.io/Technology/svg/HTML5.svg' },
+                    { nome: 'CSS3', img: 'https://cdn.worldvectorlogo.com/logos/css-3.svg' }
+                ] %}
+
+                {% for tech in tecnologias %}
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="card custom-card tech-card border-0">
+                            <div class="card-body d-flex flex-column justify-content-center align-items-center p-4">
+                                <img src="{{ tech.img }}" alt="{{ tech.nome }}" class="tech-icon">
+                                <p class="mb-0"><strong>{{ tech.nome }}</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sections = document.querySelectorAll('.fade-in-section');
+
+            if (!sections.length) return;
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                root: null,
+                threshold: 0.1
+            });
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+        });
+    </script>
+
+{% endblock %}
