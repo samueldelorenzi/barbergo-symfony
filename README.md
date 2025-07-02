@@ -122,6 +122,10 @@ barbergo-symfony/
 └── translations/        # Arquivos de tradução
 ```
 
+## 👥 Contribuidores
+
+<img src="https://contributors-img.web.app/image?repo=samueldelorenzi/barbergo-symfony&max=500" alt="Lista de contribuidores"/>
+
 ## 📜 Licença
 
 Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para mais detalhes.
